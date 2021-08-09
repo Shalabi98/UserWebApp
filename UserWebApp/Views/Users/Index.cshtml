@@ -1,0 +1,234 @@
+﻿@model UserWebApp.Models.User
+@using UserWebApp.Models;
+
+@{
+    Layout = "_Layout";
+}
+
+<style>
+    th, td, table {
+        text-align: center;
+    }
+</style>
+
+@if (@TempData["UserDeleteMessage"] != null)
+{
+<div class="alert alert-danger alert-dismissible" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    <strong>@TempData["UserDeleteMessage"]</strong>
+</div>
+}
+<br />
+<div class="container">
+    <center><h4>User Records</h4></center>
+    <br />
+    <div class="row" style="float: right">
+        <input class="form-control col-md-10" id="SearchIn" onkeyup="validateSearch()" />
+        <button class="btn btn-outline-info col-md-2" type="submit" id="SearchBtn" value="Search" style="padding-bottom: 5px;" disabled>
+            <i class="fas fa-search" style="padding: 0px;"></i>
+        </button>
+    </div>
+
+    <div class="row" style="float: left">
+        <button class="btn btn-outline-warning" type="button" id="CreateBtn" value="Create" data-toggle="modal" data-target="#createModal" style="padding-bottom: 5px;">
+            <i class="fas fa-plus" style="padding: 0px;"></i>
+        </button>
+    </div>
+    <div class="modal hide fade in" data-keyboard="false" data-backdrop="static" id="createModal" tabindex="-1" role="dialog" aria-labelledby="createModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createModalLabel">Create a New User Record</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form name="postForm" id="postForm" method="post" onsubmit="createApi();">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input type="hidden" asp-for="UserId" />
+                        <div class="form-group required">
+                            <label asp-for="UserName" class="control-label"></label>
+                            <input asp-for="UserName" class="form-control" id="uName" />
+                            <span asp-validation-for="UserName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group required">
+                            <label asp-for="FirstName" class="control-label"></label>
+                            <input asp-for="FirstName" class="form-control" id="fName" />
+                            <span asp-validation-for="FirstName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group required">
+                            <label asp-for="LastName" class="control-label"></label>
+                            <input asp-for="LastName" class="form-control" id="lName" />
+                            <span asp-validation-for="LastName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group required">
+                            <label asp-for="Gender" class="control-label">Gender</label>
+                            <select asp-for="Gender" class="form-control">
+                                <option value="" selected>---Select Gender---</option>
+                                <option value="1" id="gen">Male</option>
+                                <option value="2" id="gen">Female</option>
+                            </select>
+                        </div>
+                        <div class="form-group required">
+                            <label asp-for="Age" class="control-label"></label>
+                            <input asp-for="Age" class="form-control" id="age" />
+                            <span asp-validation-for="Age" class="text-danger"></span>
+                        </div>
+                        <div class="form-group required">
+                            <label asp-for="Email" class="control-label"></label>
+                            <input asp-for="Email" class="form-control" id="email" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                        <div class="form-group required">
+                            <label asp-for="MobilePhoneNo" class="control-label"></label>
+                            <input asp-for="MobilePhoneNo" class="form-control" id="phone" />
+                            <span asp-validation-for="MobilePhoneNo" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="IsActive" class="control-label"></label>
+                            <center>
+                                <input asp-for="IsActive" type="checkbox" class="form-control" id="status" />
+                            </center>
+                            <span asp-validation-for="IsActive" class="text-danger"></span>
+                        </div>
+                        <div class="form-row">
+                            <div class="modal-footer">
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
+                                </div>
+                                <div class="form-group">
+                                    <button id="btn-create" type="submit" value="Submit" class="btn btn-outline-success btn-block"><i class="fas fa-database"></i>&nbsp;Create Record</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br /><br />
+
+    <table class="table table-hover table-responsive-xl">
+        @using (Html.BeginForm("SortData", "Users", FormMethod.Get))
+        {
+        <thead>
+            <tr>
+                <th>
+                    <i class="fas fa-clipboard"></i>
+                    @Html.ActionLink("Username", "Index", new { sort = ViewBag.Username })
+                </th>
+                <th>
+                    <i class="fas fa-signature"></i>
+                    @Html.ActionLink("First Name", "Index", new { sort = ViewBag.FirstName })
+                </th>
+                <th>
+                    <i class="fas fa-signature"></i>
+                    @Html.ActionLink("Last Name", "Index", new { sort = ViewBag.LastName })
+                </th>
+                <th>
+                    <i class="fas fa-venus-mars"></i>
+                    @Html.DisplayName("Gender")
+                </th>
+                <th>
+                    <i class="fas fa-sort-numeric-up"></i>
+                    @Html.ActionLink("Age", "Index", new { sort = ViewBag.Age })
+                </th>
+                <th>
+                    <i class="fas fa-envelope"></i>
+                    @Html.DisplayName("Email")
+                </th>
+                <th>
+                    <i class="fas fa-phone-volume"></i>
+                    @Html.DisplayName("Phone Number")
+                </th>
+                <th>
+                    <i class="fas fa-battery-half"></i>
+                    @Html.DisplayName("User Status")
+                </th>
+                <th style="text-align: center">
+                    <a asp-action="CreateUser" class="btn btn-outline-success"><i class="far fa-plus-square"></i> User </a>
+                </th>
+            </tr>
+        </thead>
+        }
+        <tbody id="searchData">
+            @*@Html.Partial("_Users")*@
+        </tbody>
+    </table>
+</div>
+@section Scripts
+{
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script>
+    //$('#searchData').load('@Url.Action("GetSearchData", "Users")');
+    var baseUrl = "@Url.Action("GetSearchData", "Users")";
+
+    $(document).ready(function () {
+        executeSearch();
+        $("#SearchBtn").click(function () {
+            $('#searchData').load(`${baseUrl}?SearchValue=${$("#SearchIn").val()}`);
+        });
+
+    });
+
+    function createApi(e) {
+        e.preventDefault();
+        if (FormData.val() != null) {
+            $.ajax({
+                url: 'http://localhost:2168/API/CreateUser',
+                type: 'POST',
+                dataType: 'json',
+                contentType: 'application/json',
+                success: () => {
+                },
+                error: () => {
+                },
+                data: JSON.stringify({
+                    userName: $('#uName').val(),
+                    firstName: $('#fName').val(),
+                    lastName: $('#lName').val(),
+                    gender: parseInt($('#gen').val()),
+                    age: parseInt($('#age').val()),
+                    email: $('#email').val(),
+                    mobilePhoneNo: $('#phone').val(),
+                    //isActive: parseBool($('#status').val())
+                }),
+            });
+        }
+        else {
+            return;
+        }
+    };
+
+    function executeSearch() {
+        var SearchValue = $("#SearchIn").val();
+        var SetData = $("#data");
+        SetData.html("");
+
+        $.ajax({
+            type: "GET",
+            url: "Users/GetSearchData?SearchValue=" + SearchValue,
+            contentType: "html",
+            success: function (res) {
+                $("#searchData").html(res);
+                console.log(res);
+            }
+        })
+    }
+
+    function validateSearch() {
+        if (document.getElementById("SearchIn").value === "") {
+            document.getElementById("SearchBtn").disabled = true;
+        } else {
+            document.getElementById("SearchBtn").disabled = false;
+        }
+    }
+
+</script>
+
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+

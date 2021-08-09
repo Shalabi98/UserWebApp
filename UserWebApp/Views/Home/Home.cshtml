@@ -1,0 +1,24 @@
+﻿@{
+    Layout = "_Layout";
+}
+<div class="text-center">
+    <h1 class="display-4" style="color: darksalmon">Hello World</h1>
+    <p>A complete CRUD Asp.Net Core and Razor Pages Web Application for Managing Student Course Enrollment Records and APIs for Managing User Records</p>
+    <div class="row">
+        <div class="span6" style="float: none; margin: 0 auto;">
+            <a asp-controller="Students" asp-action="Index" class="btn btn-outline-info">
+                <i class="fas fa-user-graduate" style="padding: 0px;"></i>&nbsp;Students
+            </a> &nbsp;&nbsp;
+            <a asp-controller="Courses" asp-action="Index" class="btn btn-outline-warning">
+                <i class="fas fa-book" style="padding: 0px;"></i>&nbsp;Courses
+            </a> &nbsp;&nbsp;
+            <a asp-controller="Enrollments" asp-action="Index" class="btn btn-outline-danger">
+                <i class="fas fa-university" style="padding: 0px;"></i>&nbsp;Enrollments
+            </a> &nbsp;&nbsp;
+            <a asp-controller="Users" asp-action="Index" class="btn btn-outline-success">
+                <i class="fas fa-users" style="padding: 0px;"></i>&nbsp;Users
+            </a> &nbsp;&nbsp;
+        </div>
+    </div>
+</div>
+

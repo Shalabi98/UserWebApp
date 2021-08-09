@@ -1,0 +1,94 @@
+﻿@model List<UserWebApp.Models.Enrollment>
+@using UserWebApp.Models;
+
+@{
+    Layout = "_Layout";
+}
+
+<style>
+    th, td, table {
+        text-align: center;
+    }
+</style>
+
+@if (@TempData["EnrollmentDeleteMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <strong>@TempData["EnrollmentDeleteMessage"]</strong>
+    </div>
+}
+<br/>
+<div class="container">
+    <center><h4>Enrollment Summary</h4></center>
+    <br />
+    <table class="table table-hover table-responsive-xl">
+        <thead>
+            <tr>
+                <th>
+                    <i class="fas fa-clipboard"></i>
+                    @Html.DisplayName("Student Name")
+                </th>
+                <th>
+                    <i class="fas fa-clipboard"></i>
+                    @Html.DisplayName("Course Title")
+                </th>
+                <th style="text-align: center">
+                    <a asp-action="CreateEnrollment" class="btn btn-outline-success"><i class="far fa-plus-square"></i> Enrollment </a>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Count > 0)
+            {
+                foreach (var enroll in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(model => enroll.Student.FirstName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(model => enroll.Course.Title)
+                        </td>
+                        <td>
+                            <a asp-action="EditEnrollment" asp-route-id="@enroll.EnrollmentId" class="text-info ml-1"><i class="fa fa-marker fa-lg"></i></a>
+                            <a class="text-danger ml-1" data-toggle="modal" data-target="#confirmDelete-@enroll.EnrollmentId"><i class="fa fa-trash-alt fa-lg"></i></a>
+                            <div class="modal hide fade in" data-keyboard="false" data-backdrop="static" id="confirmDelete-@enroll.EnrollmentId" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="confirmDeleteLabel">Confirm Enrollment Record Deletion</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Are you sure you want to permanantly delete Student: (@enroll.Student.FirstName)'s enrollment record in Course: (@enroll.Course.Title)?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
+                                            <a asp-action="DeleteEnrollment" asp-route-id="@enroll.EnrollmentId" class="btn btn-outline-danger">Confirm</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td style="color: red" colspan="12"><b>No Record(s) Found!</b></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts{
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+

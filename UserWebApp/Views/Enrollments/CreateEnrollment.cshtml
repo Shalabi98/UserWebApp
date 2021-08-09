@@ -1,0 +1,55 @@
+﻿@model UserWebApp.Models.Enrollment
+@using UserWebApp.Models;
+@{
+    Layout = "_Layout";
+}
+<style>
+    .form-group.required .control-label:after {
+        content: "*";
+        color: red;
+    }
+</style>
+<h5>Enrollment Form</h5>
+<div class="row">
+    <div class="col-md-6">
+        <div class="panel-heading">
+            Create a New Enrollment Record
+        </div>
+        <hr />
+        <form asp-controller="Enrollments" asp-action="CreateEnrollment">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="EnrollmentId" />
+            @if (@ViewBag.EnrollmentMessage != null)
+            {
+                <div class="alert alert-info alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <strong>@ViewBag.EnrollmentMessage</strong>
+                </div>
+            }
+            <div class="form-group required">
+                <label class="control-label">Student Name:</label>
+                @Html.DropDownListFor(model => model.StudentId, (IEnumerable<SelectListItem>)ViewBag.StudentName, "Select Course", new { @class = "form-control", @name="StudentId" })
+                @Html.ValidationMessageFor(model => model.StudentId, null, new { @class = "text-danger" })
+            </div>
+            <div class="form-group required">
+                <label class="control-label">Course Title:</label>
+                @Html.DropDownListFor(model => model.CourseId, (IEnumerable<SelectListItem>)ViewBag.CourseTitle, "Select Course", new { @class = "form-control", @name = "CourseId" })
+                @Html.ValidationMessageFor(model => model.CourseId, null, new { @class = "text-danger" })
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <button type="submit" class="btn btn-outline-success btn-block"><i class="fas fa-database"></i>&nbsp;Create Record</button>
+                </div>
+                <div class="form-group col-md-6">
+                    <a asp-controller="Enrollments" asp-action="Index" class="btn btn-outline-info btn-block"><i class="fa fa-table"></i> Enrollment Records </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

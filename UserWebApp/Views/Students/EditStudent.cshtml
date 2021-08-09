@@ -1,0 +1,111 @@
+﻿@model UserWebApp.Models.Student
+@using UserWebApp.Models;
+@{
+    Layout = "_Layout";
+}
+<style>
+    .form-group.required .control-label:after {
+        content: "*";
+        color: red;
+    }
+</style>
+<h5>Edit Student Form</h5>
+<div class="row">
+    <div class="col-md-6">
+        <div class="panel-heading">
+            Edit an Existing Student Record
+        </div>
+        <hr />
+        <form asp-action="EditStudent">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="StudentId" />
+            @if (@ViewBag.StudentEditMessage != null)
+            {
+                <div class="alert alert-info alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <strong>@ViewBag.StudentEditMessage</strong>
+                </div>
+            }
+            <div class="form-group">
+                <label asp-for="Username" class="control-label"></label>
+                <input asp-for="Username" class="form-control" readonly />
+                <span asp-validation-for="Username" class="text-danger"></span>
+            </div>
+            <div class="form-group required">
+                <label asp-for="FirstName" class="control-label"></label>
+                <input asp-for="FirstName" class="form-control" />
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-group required">
+                <label asp-for="LastName" class="control-label"></label>
+                <input asp-for="LastName" class="form-control" />
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+            <div class="form-group required">
+                <label asp-for="EnrollmentDate" class="control-label"></label>
+                <div class="input-group date" data-provide="datepicker">
+                    <input asp-for="EnrollmentDate" class="form-control" type="text">
+                    <div class="input-group-addon glyphicon glyphicon-th">
+                    </div>
+                </div>
+                <span asp-validation-for="EnrollmentDate" class="text-danger"></span>
+            </div>
+            <div class="form-group required">
+                @Html.LabelFor(model => model.Gender, new { @class = "control-label" })
+                @Html.DropDownListFor(model => model.Gender, (IEnumerable<SelectListItem>)ViewBag.GenderList, "Select Gender", new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Gender, null, new { @class = "text-danger" })
+            </div>
+            <div class="form-group required">
+                <label asp-for="DateOfBirth" class="control-label"></label>
+                <div class="input-group date" data-provide="datepicker">
+                    <input asp-for="DateOfBirth" class="form-control" type="text">
+                    <div class="input-group-addon glyphicon glyphicon-th">
+                    </div>
+                </div>
+                <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+            </div>
+            <div class="form-group required">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group required">
+                <label asp-for="MobilePhoneNo" class="control-label"></label>
+                <input asp-for="MobilePhoneNo" class="form-control" />
+                <span asp-validation-for="MobilePhoneNo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="City" class="control-label"></label>
+                <input asp-for="City" class="form-control" />
+                <span asp-validation-for="City" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Address" class="control-label"></label>
+                <input asp-for="Address" class="form-control" />
+                <span asp-validation-for="Address" class="text-danger"></span>
+            </div>
+            @*@Html.Partial("_UploadedImage")*@
+            <div class="form-group">
+                <center>
+                    @Html.LabelFor(model => model.IsGraduating, new { @class = "control-label" })
+                </center>
+                @Html.CheckBoxFor(model => model.IsGraduating, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.IsGraduating, null, new { @class = "text-danger" })
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <button type="submit" class="btn btn-outline-success btn-block"><i class="fas fa-database"></i>&nbsp;Edit Record</button>
+                </div>
+                <div class="form-group col-md-6">
+                    <a asp-action="Index" class="btn btn-outline-info btn-block"><i class="fa fa-table"></i> Student Records </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

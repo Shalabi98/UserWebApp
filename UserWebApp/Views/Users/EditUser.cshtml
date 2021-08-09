@@ -1,0 +1,87 @@
+﻿@model UserWebApp.Models.User
+@using UserWebApp.Models;
+@{
+    Layout = "_Layout";
+}
+<style>
+    .form-group.required .control-label:after {
+        content: "*";
+        color: red;
+    }
+</style>
+<h5>Edit User Form</h5>
+<div class="row">
+    <div class="col-md-6">
+        <div class="panel-heading">
+            Edit an Existing User Record
+        </div>
+        <hr />
+        <form asp-action="EditUser">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="UserId" />
+            @if (@ViewBag.UserEditMessage != null)
+            {
+                <div class="alert alert-info alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <strong>@ViewBag.UserEditMessage</strong>
+                </div>
+            }
+            <div class="form-group">
+                <label asp-for="UserName" class="control-label"></label>
+                <input asp-for="UserName" class="form-control" readonly/>
+                <span asp-validation-for="UserName" class="text-danger"></span>
+            </div>
+            <div class="form-group required">
+                <label asp-for="FirstName" class="control-label"></label>
+                <input asp-for="FirstName" class="form-control" />
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-group required">
+                <label asp-for="LastName" class="control-label"></label>
+                <input asp-for="LastName" class="form-control" />
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+            <div class="form-group required">
+                @Html.LabelFor(model => model.Gender, new { @class = "control-label" })
+                @Html.DropDownList("Gender", (IEnumerable<SelectListItem>)ViewBag.GenderList, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Gender, null, new { @class = "text-danger" })
+            </div>
+            <div class="form-group required">
+                <label asp-for="Age" class="control-label"></label>
+                <input asp-for="Age" class="form-control" />
+                <span asp-validation-for="Age" class="text-danger"></span>
+            </div>
+            <div class="form-group required">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group required">
+                <label asp-for="MobilePhoneNo" class="control-label"></label>
+                <input asp-for="MobilePhoneNo" class="form-control" />
+                <span asp-validation-for="MobilePhoneNo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <center>
+                    @Html.LabelFor(model => model.IsActive, new { @class = "control-label" })
+                </center>
+                @Html.CheckBoxFor(model => model.IsActive, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.IsActive, null, new { @class = "text-danger" })
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <button type="submit" class="btn btn-outline-success btn-block"><i class="fas fa-database"></i>&nbsp;Edit Record</button>
+                </div>
+                <div class="form-group col-md-6">
+                    <a asp-action="Index" class="btn btn-outline-info btn-block"><i class="fa fa-table"></i> User Records </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

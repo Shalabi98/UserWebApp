@@ -1,0 +1,166 @@
+﻿@model List<UserWebApp.Models.Student>
+@using UserWebApp.Models;
+
+@{
+    Layout = "_Layout";
+}
+
+<style>
+    th, td, table {
+        text-align: center;
+    }
+</style>
+
+@if (@TempData["StudentDeleteMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <strong>@TempData["StudentDeleteMessage"]</strong>
+    </div>
+}
+<br />
+<div class="container">
+    <center><h4>Student Records</h4></center>
+    <br />
+    <table class="table table-hover table-responsive-xl">
+        <thead>
+            <tr>
+                <th>
+                    <i class="fas fa-clipboard"></i>
+                    @Html.DisplayName("Username")
+                </th>
+                <th>
+                    <i class="fas fa-signature"></i>
+                    @Html.DisplayName("First Name")
+
+                </th>
+                <th>
+                    <i class="fas fa-signature"></i>
+                    @Html.DisplayName("Last Name")
+
+                </th>
+                <th>
+                    <i class="fas fa-calendar"></i>
+                    @Html.DisplayName("Enrollment Date")
+
+                </th>
+                <th>
+                    <i class="fas fa-venus-mars"></i>
+                    @Html.DisplayName("Gender")
+
+                </th>
+                <th>
+                    <i class="fas fa-calendar"></i>
+                    @Html.DisplayName("Date of Birth")
+
+                </th>
+                <th>
+                    <i class="fas fa-envelope"></i>
+                    @Html.DisplayName("Email")
+
+                </th>
+                <th>
+                    <i class="fas fa-phone-volume"></i>
+                    @Html.DisplayName("Phone Number")
+
+                </th>
+                <th>
+                    <i class="fas fa-city"></i>
+                    @Html.DisplayName("City")
+
+                </th>
+                <th>
+                    <i class="fas fa-clipboard"></i>
+                    @Html.DisplayName("Address")
+
+                </th>
+                <th>
+                    <i class="fas fa-user-graduate"></i>
+                    @Html.DisplayName("Grad. Status")
+                </th>
+                <th style="text-align: center">
+                    <a asp-action="CreateStudent" class="btn btn-outline-success"><i class="far fa-plus-square"></i> Student </a>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Count > 0)
+            {
+                foreach (var student in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(model => student.Username)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(model => student.FirstName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(model => student.LastName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(model => student.EnrollmentDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(model => student.Gender)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(model => student.DateOfBirth)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(model => student.Email)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(model => student.MobilePhoneNo)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(model => student.City)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(model => student.Address)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(model => student.IsGraduating)
+                        </td>
+                        <td>
+                            <a asp-action="EditStudent" asp-route-id="@student.StudentId" class="text-info ml-1"><i class="fa fa-marker fa-lg"></i></a>
+                            <a class="text-danger ml-1" data-toggle="modal" data-target="#confirmDelete-@student.StudentId"><i class="fa fa-trash-alt fa-lg"></i></a>
+                            <div class="modal hide fade in" data-keyboard="false" data-backdrop="static" id="confirmDelete-@student.StudentId" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="confirmDeleteLabel">Confirm Student Record Deletion</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Are you sure you want to permanantly delete Student: @student.FirstName's record?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
+                                            <a asp-action="DeleteStudent" asp-route-id="@student.StudentId" class="btn btn-outline-danger">Confirm</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td style="color: red" colspan="12"><b>No Record(s) Found!</b></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts{
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+

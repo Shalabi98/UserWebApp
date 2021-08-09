@@ -1,0 +1,116 @@
+﻿@model List<UserWebApp.Models.Course>
+@using UserWebApp.Models;
+
+@{
+    Layout = "_Layout";
+}
+
+<style>
+    th, td, table {
+        text-align: center;
+    }
+</style>
+
+@if (@TempData["CourseDeleteMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <strong>@TempData["CourseDeleteMessage"]</strong>
+    </div>
+}
+<br/>
+<div class="container">
+    <center><h4>Course Records</h4></center>
+    <br />
+    <table class="table table-hover table-responsive-xl">
+        <thead>
+            <tr>
+                <th>
+                    <i class="fas fa-clipboard"></i>
+                    @Html.DisplayName("Course Title")
+                </th>
+                <th>
+                    <i class="fas fa-code-branch"></i>
+                    @Html.DisplayName("Course Code")
+                </th>
+                <th>
+                    <i class="fas fa-stopwatch"></i>
+                    @Html.DisplayName("Credit Hours")
+                </th>
+                <th>
+                    <i class="fas fa-calendar"></i>
+                    @Html.DisplayName("Semester")
+                </th>
+                <th>
+                    <i class="fas fa-search-location"></i>
+                    @Html.DisplayName("Location")
+                </th>
+                <th style="text-align: center">
+                    <a asp-action="CreateCourse" class="btn btn-outline-success"><i class="far fa-plus-square"></i> Course </a>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Count > 0)
+            {
+                foreach (var course in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(model => course.Title)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(model => course.Code)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(model => course.CreditHours)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(model => course.Semester)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(model => course.Location)
+                        </td>
+                        <td>
+                            <a asp-action="EditCourse" asp-route-id="@course.CourseId" class="text-info ml-1"><i class="fa fa-marker fa-lg"></i></a>
+
+                            <a class="text-danger ml-1" data-toggle="modal" data-target="#confirmDelete-@course.CourseId"><i class="fa fa-trash-alt fa-lg"></i></a>
+                            <div class="modal hide fade in" data-keyboard="false" data-backdrop="static" id="confirmDelete-@course.CourseId" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="confirmDeleteLabel">Confirm Course Record Deletion</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Are you sure you want to permanantly delete Course: @course.Title's record?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
+                                            <a asp-action="DeleteCourse" asp-route-id="@course.CourseId" class="btn btn-outline-danger">Confirm</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td style="color: red" colspan="12"><b>No Record(s) Found!</b></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts{
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+

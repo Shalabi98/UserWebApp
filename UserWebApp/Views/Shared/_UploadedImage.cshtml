@@ -1,0 +1,15 @@
+﻿@model List<UserWebApp.Models.Student>
+@using UserWebApp.Models;
+<div class="row">
+    @if (Model != null && Model.Count > 0)
+    {
+        foreach (var item in Model)
+        {
+            <div class="wrapper">
+                <div class="box box1">
+                    <a href="@item" target="_blank"><img src="@item" alt="images" /></a>
+                </div>
+            </div>
+        }
+    }
+</div>
