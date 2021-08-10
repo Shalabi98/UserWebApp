@@ -11,6 +11,7 @@ using UserWebApp.Models;
 
 namespace UserWebApp.Controllers
 {
+    [Authorize]
     public class UsersController : Controller
     {
         private readonly UniversityContext db;

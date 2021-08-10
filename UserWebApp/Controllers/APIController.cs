@@ -16,6 +16,7 @@ namespace UserWebApp.Controllers
 {
     [Route("[controller]")]
     [ApiController]
+    [Authorize]
     public class APIController : ControllerBase
     {
         private readonly IUserService _userService;

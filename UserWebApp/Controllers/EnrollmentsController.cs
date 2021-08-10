@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Linq;
 using UserWebApp.Models;
 
 namespace UserWebApp.Controllers
 {
+    [Authorize]
     public class EnrollmentsController : Controller
     {
         private readonly UniversityContext db;

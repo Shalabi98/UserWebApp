@@ -13,6 +13,7 @@ using UserWebApp.Models;
 
 namespace UserWebApp.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -26,24 +27,16 @@ namespace UserWebApp.Controllers
         {
             return View();
         }
-        public IActionResult Register()
-        {
-            return View();
-        }
 
         public IActionResult Home()
         {
             return View();
         }
 
-        public IActionResult Privacy()
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
         {
-            return View();
-        }
-
-        public IActionResult Index(User user)
-        {
-            return View();
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ using UserWebApp.Models;
 
 namespace UserWebApp.Controllers
 {
+    [Authorize]
     public class StudentsController : Controller
     {
         private readonly UniversityContext db;

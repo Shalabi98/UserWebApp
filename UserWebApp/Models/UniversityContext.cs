@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace UserWebApp.Models
 {
-    public class UniversityContext : IdentityDbContext
+    public class UniversityContext : DbContext
     {
         public UniversityContext()
         {

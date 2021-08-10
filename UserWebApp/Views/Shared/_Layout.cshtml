@@ -12,12 +12,11 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
-                <a class="navbar-brand" asp-controller="Home" asp-action="Index"><i class="fas fa-code-branch"></i>&nbsp;<b>My Web Application</b></a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-            </div>
+                <a class="navbar-brand" asp-controller="Home" asp-action="Home"><i class="fas fa-code-branch"></i>&nbsp;<b>My Web Application</b></a>
+                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+                    <partial name="_LoginPartial.cshtml" />
+                </div>
+            </div>s
         </nav>
     </header>
     <div class="container" style="width: 100%">
@@ -28,7 +27,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2021 - Student Course Enrollement Web App - Imran Shalabi - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2021 - ASP.Net Core Web App - Imran Shalabi -
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
