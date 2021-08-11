@@ -25,10 +25,19 @@ namespace UserWebApp.Areas.Identity
                 {
                     options.SignIn.RequireConfirmedAccount = false;
 
+                    options.Password.RequireDigit = false;
+                    options.Password.RequireNonAlphanumeric = false;
+                    options.Password.RequireUppercase = false;
+                    options.Password.RequiredLength = 6;
+
+                    options.User.RequireUniqueEmail = true;
                 }).AddEntityFrameworkStores<AuthDbContext>();
 
-                services.ConfigureApplicationCookie(options => {
+                services.ConfigureApplicationCookie(options =>
+                {
                     options.Cookie.Name = "Identity.Cookie";
+                    options.ExpireTimeSpan = TimeSpan.FromSeconds(5);
+                    options.SlidingExpiration = true;
                 });
             });
         }

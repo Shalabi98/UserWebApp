@@ -18,14 +18,14 @@ namespace UserWebApp.Controllers
     public class EnrollmentsController : Controller
     {
         private readonly UniversityContext db;
-        public EnrollmentsController(UniversityContext context)
+        public EnrollmentsController(UniversityContext context )
         {
             this.db = context;
         }
 
         public IActionResult Index()
         {
-            var nameIdentifier = User.FindFirst(ClaimTypes.NameIdentifier);
+            var nameIdentifier = User.FindFirst(ClaimTypes.Email);
 
             var enrollments = db.Enrollments.ToList();
             GetStudentName();

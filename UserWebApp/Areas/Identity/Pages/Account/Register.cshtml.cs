@@ -81,9 +81,8 @@ namespace UserWebApp.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         }
 
-        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+        public async Task<IActionResult> OnPostAsync()
         {
-            returnUrl = returnUrl ?? Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
@@ -98,8 +97,8 @@ namespace UserWebApp.Areas.Identity.Pages.Account
                     new Claim("FirstName", Input.FirstName),
                     new Claim("Username", Input.LastName)
                 };
-
-                if (result.Succeeded)
+                
+                if (result.Succeeded) 
                 {
                     await _signInManager.SignInWithClaimsAsync(user, isPersistent:false, regIdentity);
                     return RedirectToAction("Home","Home");
