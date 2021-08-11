@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace UserWebApp.Areas.Identity.Data
 {
-    public class ApplicationUser : IdentityUser 
+    public class ApplicationUser : IdentityUser
     {
         [DisplayName("First Name")]
         [PersonalData]
-        [Column(TypeName="nvarchar(100)")]
+        [Column(TypeName = "nvarchar(100)")]
         public string FirstName { get; set; }
 
         [DisplayName("Last Name")]

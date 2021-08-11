@@ -1,11 +1,19 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Security.Claims;
+using System.ServiceModel.Channels;
+using System.Threading;
+using System.Web.Http.Controllers;
 using UserWebApp.Models;
 
 namespace UserWebApp.Controllers
 {
+    
     [Authorize]
     public class EnrollmentsController : Controller
     {
@@ -17,6 +25,8 @@ namespace UserWebApp.Controllers
 
         public IActionResult Index()
         {
+            var nameIdentifier = User.FindFirst(ClaimTypes.NameIdentifier);
+
             var enrollments = db.Enrollments.ToList();
             GetStudentName();
             GetCourseTitle();
