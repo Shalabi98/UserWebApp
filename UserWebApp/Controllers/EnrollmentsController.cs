@@ -1,31 +1,27 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Security.Claims;
-using System.ServiceModel.Channels;
-using System.Threading;
-using System.Web.Http.Controllers;
+using UserWebApp.Controllers.Common;
 using UserWebApp.Models;
 
 namespace UserWebApp.Controllers
 {
-    
+
     [Authorize]
-    public class EnrollmentsController : Controller
+    public class EnrollmentsController : MainController
     {
         private readonly UniversityContext db;
-        public EnrollmentsController(UniversityContext context )
+        public EnrollmentsController(UniversityContext context)
         {
             this.db = context;
         }
 
         public IActionResult Index()
         {
-            var nameIdentifier = User.FindFirst(ClaimTypes.Email);
+            var email = ApplicationUser.Email;
+            var firstName = ApplicationUser.FirstName;
+            var lastName = ApplicationUser.LastName;
 
             var enrollments = db.Enrollments.ToList();
             GetStudentName();

@@ -1,11 +1,9 @@
 ﻿using System;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using UserWebApp.Areas.Identity.Data;
 using UserWebApp.Data;
 
 [assembly: HostingStartup(typeof(UserWebApp.Areas.Identity.IdentityHostingStartup))]
@@ -21,7 +19,7 @@ namespace UserWebApp.Areas.Identity
                     options.UseSqlServer(
                         context.Configuration.GetConnectionString("AuthDbContextConnection")));
 
-                services.AddDefaultIdentity<IdentityUser>(options =>
+                services.AddDefaultIdentity<ApplicationUser>(options =>
                 {
                     options.SignIn.RequireConfirmedAccount = false;
 
@@ -36,7 +34,7 @@ namespace UserWebApp.Areas.Identity
                 services.ConfigureApplicationCookie(options =>
                 {
                     options.Cookie.Name = "Identity.Cookie";
-                    options.ExpireTimeSpan = TimeSpan.FromSeconds(5);
+                    options.ExpireTimeSpan = TimeSpan.FromSeconds(60);
                     options.SlidingExpiration = true;
                 });
             });

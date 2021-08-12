@@ -1,4 +1,5 @@
-﻿@{
+﻿@page
+@{
     Layout = "_Layout";
 }
 <div class="text-center">
@@ -15,10 +16,73 @@
             <a asp-controller="Enrollments" asp-action="Index" class="btn btn-outline-danger">
                 <i class="fas fa-university" style="padding: 0px;"></i>&nbsp;Enrollments
             </a> &nbsp;&nbsp;
-            <a asp-controller="Users" asp-action="Index" class="btn btn-outline-success">
+            <a asp-controller="Users" asp-action="Index" class="btn btn-outline-dark">
                 <i class="fas fa-users" style="padding: 0px;"></i>&nbsp;Users
             </a> &nbsp;&nbsp;
         </div>
     </div>
 </div>
 
+<div class="container wrap">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel">
+                <div class="panel-heading" id="accordion">
+                    <i class="fas fa-comment-dotted"></i>Start Chat
+                    <div class="btn-group pull-right">
+                        <a type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                            <i class="fas fa-arrow-down"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="panel-collapse collapse" id="collapseOne">
+                    <div class="panel-body">
+                        <ul id="messageList" class="chat">
+                        </ul>
+                    </div>
+                    <div class="panel-footer">
+                        <div class="input-group">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <input type="text" id="userMessage" class="form-control input-sm" placeholder="Input Message..." />
+                                </div>
+                            </div>&nbsp;&nbsp;&nbsp;
+                            <span class="input-group-btn">
+                                <input type="button" value="Send" id="sendMessage" class="btn btn-info">
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+<script>
+    // build SignalR connection
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl("/chatHub")
+        .build();
+
+    // to receive a message
+    connection.on("ReceiveMessage", (user, message) => {
+        debugger;
+        const rec_msg = user + ": " + message;
+        const li = document.createElement("li");
+        li.textContent = rec_msg;
+        document.getElementById("messageList").appendChild(li);
+    });
+
+    connection.start().catch(err => console.error(err.toString()));
+
+    // to send a message
+    document.getElementById("sendMessage").addEventListener("click", event => {
+        const message = document.getElementById("userMessage").value;
+
+        connection.invoke("SendMessage", message).catch(err => console.error(err.toString()));
+        //connection.stop();
+        event.preventDefault();
+    });
+</script>
+}

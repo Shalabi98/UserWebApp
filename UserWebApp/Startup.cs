@@ -1,18 +1,16 @@
 using Azure.Storage.Blobs;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Linq;
-using UserWebApp.Controllers;
 using UserWebApp.IServices;
 using UserWebApp.Models;
 using UserWebApp.Services;
+using UserWebApp.Hubs;
 
 namespace UserWebApp
 {
@@ -34,15 +32,16 @@ namespace UserWebApp
             services.AddScoped<IBlobService, BlobService>(); 
 
             services.AddDbContext<UniversityContext>(options => { options.UseSqlServer(Configuration.GetConnectionString("Database")); });
-        
+
+            services.AddSignalR();
+
             services.AddMvc()
-            .AddMvcOptions(s =>
+            .AddMvcOptions(s => 
             {
                 s.ModelBinderProviders[s.ModelBinderProviders.TakeWhile(p => !(p is ComplexTypeModelBinderProvider)).Count()] = new TrimmingModelBinderProvider();
             });
 
             services.AddControllersWithViews();
-
             services.AddRazorPages();
         }
 
@@ -71,6 +70,7 @@ namespace UserWebApp
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
+                endpoints.MapHub<ChatHub>("/chatHub");
             });
         }
     }
