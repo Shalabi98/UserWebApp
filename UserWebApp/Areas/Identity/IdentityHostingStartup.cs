@@ -34,8 +34,8 @@ namespace UserWebApp.Areas.Identity
                 services.ConfigureApplicationCookie(options =>
                 {
                     options.Cookie.Name = "Identity.Cookie";
-                    options.ExpireTimeSpan = TimeSpan.FromSeconds(60);
-                    options.SlidingExpiration = true;
+                    //options.ExpireTimeSpan = TimeSpan.FromSeconds(60);
+                    //options.SlidingExpiration = true;
                 });
             });
         }

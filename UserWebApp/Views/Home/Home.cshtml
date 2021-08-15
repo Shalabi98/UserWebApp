@@ -43,8 +43,11 @@
                     <div class="panel-footer">
                         <div class="input-group">
                             <div class="row">
-                                <div class="col-md-12">
+                                <div class="col-md-6">
                                     <input type="text" id="userMessage" class="form-control input-sm" placeholder="Input Message..." />
+                                </div>
+                                <div class="col-md-6">
+                                    <input type="text" id="sendTo" class="form-control input-sm" placeholder="Send to..." />
                                 </div>
                             </div>&nbsp;&nbsp;&nbsp;
                             <span class="input-group-btn">
@@ -65,23 +68,21 @@
         .withUrl("/chatHub")
         .build();
 
+    connection.start().catch(err => console.error(err.toString()));
+
     // to receive a message
     connection.on("ReceiveMessage", (user, message) => {
-        debugger;
         const rec_msg = user + ": " + message;
         const li = document.createElement("li");
         li.textContent = rec_msg;
         document.getElementById("messageList").appendChild(li);
     });
 
-    connection.start().catch(err => console.error(err.toString()));
-
     // to send a message
     document.getElementById("sendMessage").addEventListener("click", event => {
-        const message = document.getElementById("userMessage").value;
-
-        connection.invoke("SendMessage", message).catch(err => console.error(err.toString()));
-        //connection.stop();
+        const message = document.getElementById("userMessage").value; 
+        const sendTo = document.getElementById("sendTo").value;
+        connection.invoke("SendMessage", sendTo, message).catch(err => console.error(err.toString()));
         event.preventDefault();
     });
 </script>

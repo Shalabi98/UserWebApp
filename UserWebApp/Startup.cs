@@ -11,6 +11,7 @@ using UserWebApp.IServices;
 using UserWebApp.Models;
 using UserWebApp.Services;
 using UserWebApp.Hubs;
+using Microsoft.AspNetCore.SignalR;
 
 namespace UserWebApp
 {
@@ -32,6 +33,8 @@ namespace UserWebApp
             services.AddScoped<IBlobService, BlobService>(); 
 
             services.AddDbContext<UniversityContext>(options => { options.UseSqlServer(Configuration.GetConnectionString("Database")); });
+
+            services.AddSingleton<IUserIdProvider, CustomMessage>();
 
             services.AddSignalR();
 

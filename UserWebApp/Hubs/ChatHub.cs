@@ -8,10 +8,14 @@ namespace UserWebApp.Hubs
     [Authorize]
     public class ChatHub : MainHub
     {
-        public async Task SendMessage(string message)
+        public async Task SendMessage(string sendTo, string message)
         {
-            await Clients.All.SendAsync("ReceiveMessage", ApplicationUser.FirstName, message);
+            await Clients.User(sendTo).SendAsync("ReceiveMessage", ApplicationUser.FirstName, message);
         }
-
+        
+        public async Task PostNotification()
+        {
+            await Clients.All.SendAsync("Notification");
+        }
     }
 }

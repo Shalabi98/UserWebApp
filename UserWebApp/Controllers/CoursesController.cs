@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using System.Linq;
+using System.Threading.Tasks;
+using UserWebApp.Hubs;
 using UserWebApp.Models;
 
 namespace UserWebApp.Controllers
@@ -9,9 +12,11 @@ namespace UserWebApp.Controllers
     public class CoursesController : Controller
     {
         private readonly UniversityContext db;
-        public CoursesController(UniversityContext context)
+        private readonly IHubContext<ChatHub> _hub;
+        public CoursesController(UniversityContext context, IHubContext<ChatHub> hub)
         {
             this.db = context;
+            _hub = hub;
         }
 
         [HttpGet]
@@ -22,7 +27,7 @@ namespace UserWebApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateCourse([Bind("CourseId,Title,Code,CreditHours,Semester,Location")] Course course)
+        public async Task<IActionResult> CreateCourse([Bind("CourseId,Title,Code,CreditHours,Semester,Location")] Course course)
         {
             if (ModelState.IsValid)
             {
@@ -35,7 +40,8 @@ namespace UserWebApp.Controllers
                     db.SaveChanges();
                     ViewBag.CourseMessage = "Course Record Successfully Created";
 
-                    return RedirectToAction(nameof(Index));
+                    await _hub.Clients.All.SendAsync("Notification");
+                    return View(course);
                 }
                 if (isTitleExist)
                 {
