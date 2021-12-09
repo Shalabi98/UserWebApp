@@ -1,0 +1,42 @@
+﻿@{
+    Layout = "_Layout";
+}
+
+<html>
+<body>
+    <h4>Web Socket Communication (Node.js and C#)</h4>
+    Message:<input type='text' id="message">
+    <br />
+    <input type="button" id="btnsend" value="Send" />
+    <div id="dvMessage"> </div>
+</body>
+</html>
+
+<script>
+    $(document).ready(function () {
+        var ws = new WebSocket("ws://localhost:9898");
+        var communication = "";
+
+        $("#btnsend").on('click', function () {
+            var message = $("#message").val();
+            ws.send(message);
+            communication += 'Send Message ' + message + " ";
+            $("#dvMessage").html(communication);
+        });
+
+        ws.onmessage = function (evt) {
+            communication += 'Received Message ' + evt.data + " ";
+            $("#dvMessage").html(communication);
+        };
+
+        ws.onclose = function (evt) {
+            communication += 'Connection Closed ' + evt.code + " ";
+            $("#dvMessage").html(communication);
+        };
+
+        ws.onerror = function (evt) {
+            communication += 'Error Occured ' + evt.data + " ";
+            $("#dvMessage").html(communication);
+        };
+    });
+</script>

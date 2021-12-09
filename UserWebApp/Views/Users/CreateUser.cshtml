@@ -1,5 +1,7 @@
 ﻿@model UserWebApp.Models.User
 @using UserWebApp.Models;
+@using System.Text.Encodings.Web;
+
 @{
     Layout = "_Layout";
 }
@@ -9,14 +11,23 @@
         color: red;
     }
 </style>
+
+@*@inject JavaScriptEncoder encoder;
+@{
+    var untrustedData = "<\"123>";
+}
+<script>
+    document.write("@encoder.Encode(untrustedData)");
+</script>*@
+
 <h5>User Form</h5>
-<div class="row">
-    <div class="col-md-6">
-        <div class="panel-heading">
-            Create a New User Record
-        </div>
-        <hr />
-        <form asp-action="CreateUser">
+<form asp-action="CreateUser">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="panel-heading">
+                Create a New User Record
+            </div>
+            <hr />
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="UserId" />
             @if (@ViewBag.UserMessage != null)
@@ -48,7 +59,16 @@
                 @Html.DropDownListFor(model => model.Gender, (IEnumerable<SelectListItem>)ViewBag.GenderList, "Select Gender", new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.Gender, null, new { @class = "text-danger" })
             </div>
-
+            <div class="form-group required">
+                @Html.LabelFor(model => model.TimeZoneId, new { @class = "control-label" })
+                @Html.DropDownListFor(model => model.TimeZoneId, (IEnumerable<SelectListItem>)ViewBag.TimeZoneList, "Select Time Zone", new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.TimeZoneId, null, new { @class = "text-danger" })
+            </div>
+            <div class="form-group required">
+                @Html.LabelFor(model => model.Culture, new { @class = "control-label" })
+                @Html.DropDownListFor(model => model.Culture, (IEnumerable<SelectListItem>)ViewBag.CultureList, "Select Culture", new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Culture, null, new { @class = "text-danger" })
+            </div>
             <div class="form-group required">
                 <label asp-for="Age" class="control-label"></label>
                 <input asp-for="Age" class="form-control" />
@@ -79,10 +99,62 @@
                     <a asp-action="Index" class="btn btn-outline-info btn-block"><i class="fa fa-table"></i> User Records </a>
                 </div>
             </div>
-        </form>
+        </div>
+        <div class="col-md-6">
+            <div>
+                <label asp-for="Latitude"></label>
+                <input type="hidden" asp-for="Latitude" />
+                <input type="hidden" asp-for="Longitude" />
+                <div id="map" style="height:500px; width:100%"></div>
+            </div>
+        </div>
     </div>
-</div>
+</form>
+
+<script defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA9thXarvNAj0azH0DybEg2N7BfSF0GyW8&callback=initMap"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        var map = null;
+        var userMarker = null;
+        var lat = 0;
+        var lng = 0;
+
+        function initMap() {
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: {
+                    lat: 31.95679490140756,
+                    lng: 35.85974687073398
+                },
+                zoom: 10
+            });
+
+            google.maps.event.addListener(map, 'click', function (e) {
+                placeMarker(e.latLng);
+            });
+        }
+
+        function placeMarker(location) {
+            if (userMarker) {
+                //userMarker.setMap(null);
+                //userMarker = null;
+                //placeMarker(location);
+                userMarker.setPosition(location);
+            } else {
+                userMarker = new google.maps.Marker({
+                    position: location,
+                    map: map,
+                    icon: 'https://img.icons8.com/fluent/marker-storm.png',
+                    title: 'Your Marker',
+                    animation: google.maps.Animation.DROP
+                });
+            }
+            lat = userMarker.getPosition().lat();
+            lng = userMarker.getPosition().lng();
+            $('#Latitude').val(lat);
+            $('#Longitude').val(lng);
+        }
+    </script>
 }

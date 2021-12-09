@@ -12,6 +12,10 @@ using UserWebApp.Models;
 using UserWebApp.Services;
 using UserWebApp.Hubs;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.AspNetCore.Http;
+using FluentValidation.AspNetCore;
+using FluentValidation;
+using UserWebApp.Validators;
 
 namespace UserWebApp
 {
@@ -26,6 +30,11 @@ namespace UserWebApp
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<CookiePolicyOptions>(options => {
+                options.CheckConsentNeeded = context => true;
+                options.MinimumSameSitePolicy = SameSiteMode.Strict;
+            });
+
             services.AddScoped<IUserService, UserService>();
             
             services.AddScoped(x =>
@@ -38,13 +47,21 @@ namespace UserWebApp
 
             services.AddSignalR();
 
-            services.AddMvc()
+            services.AddKendo();
+
+            services.AddSwaggerGen();
+
+            services.AddMvc().AddFluentValidation()
             .AddMvcOptions(s => 
             {
                 s.ModelBinderProviders[s.ModelBinderProviders.TakeWhile(p => !(p is ComplexTypeModelBinderProvider)).Count()] = new TrimmingModelBinderProvider();
             });
 
-            services.AddControllersWithViews();
+            services.AddTransient<IValidator<Streaming>, StreamingValidator>();
+
+            services.AddControllersWithViews()
+                .AddJsonOptions(options =>
+                options.JsonSerializerOptions.PropertyNamingPolicy = null);
             services.AddRazorPages();
         }
 
@@ -53,11 +70,19 @@ namespace UserWebApp
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseSwagger();
+                app.UseSwaggerUI(options =>
+                {
+                    options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+                    options.RoutePrefix = string.Empty;
+                });
             }
             else
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+
+            app.UseCookiePolicy();
 
             app.UseStaticFiles();
 

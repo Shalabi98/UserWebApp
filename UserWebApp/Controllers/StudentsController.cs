@@ -23,10 +23,13 @@ namespace UserWebApp.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public IActionResult Index(string sort)
         {
-            var students = db.Students.ToList();
-            return View(students);
+            ViewBag.Username = sort == "Username" ? "Username_desc" : "Username";
+            ViewBag.FirstName = String.IsNullOrEmpty(sort) ? "FirstName_desc" : "";
+            ViewBag.LastName = sort == "LastName" ? "LastName_desc" : "LastName";
+            ViewBag.EnrollmentDate = sort == "EnrollmentDate" ? "EnrollmentDate_desc" : "EnrollmentDate";
+            return SortData(sort);
         }
 
         [HttpPost]
@@ -149,6 +152,40 @@ namespace UserWebApp.Controllers
                 TempData["StudentDeleteMessage"] = "This Student is Enrolled in a Course, Failed to Delete!";
             }
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet]
+        public IActionResult SortData(string sort)
+        {
+            var students = db.Students.Where(s => s.Username != null);
+            switch (sort)
+            {
+                case "Username":
+                    students = students.OrderBy(s => s.Username);
+                    break;
+                case "Username_desc":
+                    students = students.OrderByDescending(s => s.Username);
+                    break;
+                case "FirstName_desc":
+                    students = students.OrderByDescending(s => s.FirstName);
+                    break;
+                case "LastName":
+                    students = students.OrderBy(s => s.LastName);
+                    break;
+                case "LastName_desc":
+                    students = students.OrderByDescending(s => s.LastName);
+                    break;
+                case "EnrollmentDate":
+                    students = students.OrderBy(s => s.EnrollmentDate); 
+                    break;
+                case "EnrollmentDate_desc":
+                    students = students.OrderByDescending(s => s.EnrollmentDate);
+                    break;
+                default:
+                    students = students.OrderBy(s => s.FirstName);
+                    break;
+            }
+            return View(students.ToList());
         }
     }
 }

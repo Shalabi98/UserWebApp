@@ -26,6 +26,16 @@ namespace UserWebApp.Controllers
             return View();
         }
 
+        public IActionResult Maps()
+        {
+            return View();
+        }
+
+        public IActionResult Client()
+        {
+            return View();
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

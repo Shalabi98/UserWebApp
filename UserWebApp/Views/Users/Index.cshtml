@@ -112,21 +112,19 @@
     <br /><br />
 
     <table class="table table-hover table-responsive-xl">
-        @using (Html.BeginForm("SortData", "Users", FormMethod.Get))
-        {
         <thead>
             <tr>
                 <th>
                     <i class="fas fa-clipboard"></i>
-                    @Html.ActionLink("Username", "Index", new { sort = ViewBag.Username })
+                    @Html.DisplayName("Username")
                 </th>
                 <th>
                     <i class="fas fa-signature"></i>
-                    @Html.ActionLink("First Name", "Index", new { sort = ViewBag.FirstName })
+                    @Html.DisplayName("First Name")
                 </th>
                 <th>
                     <i class="fas fa-signature"></i>
-                    @Html.ActionLink("Last Name", "Index", new { sort = ViewBag.LastName })
+                    @Html.DisplayName("Last Name")
                 </th>
                 <th>
                     <i class="fas fa-venus-mars"></i>
@@ -134,7 +132,7 @@
                 </th>
                 <th>
                     <i class="fas fa-sort-numeric-up"></i>
-                    @Html.ActionLink("Age", "Index", new { sort = ViewBag.Age })
+                    @Html.DisplayName("Age")
                 </th>
                 <th>
                     <i class="fas fa-envelope"></i>
@@ -148,12 +146,23 @@
                     <i class="fas fa-battery-half"></i>
                     @Html.DisplayName("User Status")
                 </th>
+                <th>
+                    <i class="fas fa-globe"></i>
+                    @Html.DisplayName("Time Zone")
+                </th>
+                <th>
+                    <i class="fas fa-globe"></i>
+                    @Html.DisplayName("Culture")
+                </th>
+                <th>
+                    <i class="fas fa-globe"></i>
+                    @Html.DisplayName("Registration Date")
+                </th>
                 <th style="text-align: center">
                     <a asp-action="CreateUser" class="btn btn-outline-success"><i class="far fa-plus-square"></i> User </a>
                 </th>
             </tr>
         </thead>
-        }
         <tbody id="searchData">
             @*@Html.Partial("_Users")*@
         </tbody>
@@ -228,7 +237,6 @@
     }
 
 </script>
-
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
 

@@ -16,7 +16,7 @@
             Create a New Course Record
         </div>
         <hr />
-        <form asp-controller="Courses" asp-action="CreateCourse" id="createCourseForm">
+        <form asp-controller="Courses" asp-action="CreateCourse" >
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="CourseId" />
             @if (@ViewBag.CourseMessage != null)
@@ -55,7 +55,7 @@
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
-                    <button type="submit" class="btn btn-outline-success btn-block" id="createBtn"><i class="fas fa-database"></i>&nbsp;Create Record</button>
+                    <button type="submit" class="btn btn-outline-success btn-block"><i class="fas fa-database"></i>&nbsp;Create Record</button>
                 </div>
                 <div class="form-group col-md-6">
                     <a asp-controller="Courses" asp-action="Index" class="btn btn-outline-info btn-block"><i class="fa fa-table"></i> Course Records </a>
@@ -68,31 +68,31 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 <script>
-    // build SignalR connection
-    const connection = new signalR.HubConnectionBuilder()
-        .withUrl("/chatHub")
-        .build();
+    //// build SignalR connection
+    //const connection = new signalR.HubConnectionBuilder()
+    //    .withUrl("/chatHub")
+    //    .build();
 
-    function updateNotificationCount() {
-        var count = 0;
-        count = parseInt($('span.count').html()) || 0;
-        count++;
-        $('span.count').html(count);
-    }
+    //function updateNotificationCount() {
+    //    var count = 0;
+    //    count = parseInt($('span.count').html()) || 0;
+    //    count++;
+    //    $('span.count').html(count);
+    //}
 
-    connection.start().catch(err => console.error(err.toString()));
+    //connection.start().catch(err => console.error(err.toString()));
 
-    function invokeNotification(e) {
-        connection.invoke("PostNotification").catch(err => console.error(err.toString()));
-        e.preventDefault();
-    }
+    //function invokeNotification(e) {
+    //    connection.invoke("PostNotification").catch(err => console.error(err.toString()));
+    //    e.preventDefault();
+    //}
 
-    // to receive a notification
-    connection.on("Notification", () => {
-        updateNotificationCount();
-    });
+    //// to receive a notification
+    //connection.on("Notification", () => {
+    //    updateNotificationCount();
+    //});
 
-    // to send a notification
-    document.getElementById("createBtn").addEventListener('click', invokeNotification);
+    //// to send a notification
+    //document.getElementById("createBtn").addEventListener('click', invokeNotification);
 </script>
 }

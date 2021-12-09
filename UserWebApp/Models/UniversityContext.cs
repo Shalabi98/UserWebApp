@@ -1,10 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 namespace UserWebApp.Models
 {
@@ -21,6 +16,8 @@ namespace UserWebApp.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+
             modelBuilder.Entity<Enrollment>()
                 .HasOne(c => c.Course)
                 .WithMany(e => e.Enrollments)
@@ -36,17 +33,7 @@ namespace UserWebApp.Models
         public DbSet<Course> Courses{ get; set; }
         public DbSet<Student> Students { get; set; }
         public DbSet<Enrollment> Enrollments { get; set; }
-
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //{
-        //    SqlConnectionStringBuilder ConnectionString = new SqlConnectionStringBuilder()
-        //    {
-        //        DataSource = I - SHALABI,
-        //        InitialCatalog = UserDB,
-        //        IntegratedSecurity = true;
-        //};
-
-        //optionsBuilder.UseSqlServer(ConnectionString.ToString());
-        //}
+        public DbSet<Ride> Rides { get; set; }
+        public DbSet<Streaming> Streams { get; set; }
     }
 }

@@ -1,0 +1,207 @@
+﻿@{
+    Layout = "_Layout";
+}
+
+<center>
+    @*<div class="form-group">
+            <div class="col-md-4">
+                <input type="text" placeholder="Latitude" class="form-control" id="lat" />
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-4">
+                <input type="text" placeholder="Longitude" class="form-control" id="lng" />
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-4">
+                <button class="btn btn-outline-info btn-block" onclick="searchLocation()">
+                    <i class="fas fa-search-location" style="padding: 0px;"></i>&nbsp;Submit
+                </button> &nbsp;&nbsp;
+            </div>
+        </div>*@
+    <div id="map" class="col-md-12" style="height:500px; width:100%"> </div>
+    <br /><br />
+    <div id="origin"></div>
+    <div id="destination"></div>
+    <div id="distance"></div>
+    <div id="duration"></div>
+</center>
+
+<script defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA9thXarvNAj0azH0DybEg2N7BfSF0GyW8&callback=initMap"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+
+@section Scripts{
+    <script>
+        //var markers = [];
+        //var map = null;
+        //var poly;
+
+        //function searchLocation() {
+        //    var lat = document.getElementById('lat').value;
+        //    var lng = document.getElementById('lng').value;
+
+        //    placeMarker(new google.maps.LatLng(lat, lng));
+        //}
+
+        //function initMap() {
+        //    map = new google.maps.Map(document.getElementById('map'), {
+        //        center: {
+        //            lat: 31.95679490140756,
+        //            lng: 35.85974687073398
+        //        },
+        //        zoom: 10
+        //    });
+
+        //    poly = new google.maps.Polyline({
+        //        strokeColor: "#65AFC0",
+        //        strokeOpacity: 2.0,
+        //        strokeWeight: 3,
+        //    });
+        //    poly.setMap(map);
+
+        //    google.maps.event.addListener(map, 'click', function (e) {
+        //        placeMarker(e.latLng);
+        //    });
+        //}
+
+        //function placeMarker(location) {
+        //    const path = poly.getPath();
+        //    path.push(location);
+
+        //    let newMarker = new google.maps.Marker({
+        //        position: location,
+        //        map: map,
+        //        animation: google.maps.Animation.DROP,
+        //    });
+        //    markers.push(newMarker);
+
+        //    let newInfoWindow = new google.maps.InfoWindow();
+        //    newInfoWindow.setContent('<div><label>Lat , Lng:&nbsp;</label>' + location + '</div>');
+        //    google.maps.event.addListener(newMarker, 'mouseover', function () {
+        //        newInfoWindow.open(map, newMarker);
+        //    });
+        //    google.maps.event.addListener(newMarker, 'mouseout', function () {
+        //        newInfoWindow.close();
+        //    });
+
+        //    fitMapToMarkers();
+        //}
+
+        //function fitMapToMarkers() {
+        //    var latlngbounds = new google.maps.LatLngBounds();
+
+        //    for (var i = 0; i < markers.length; i++) {
+        //        latlngbounds.extend(markers[i].position);
+        //    }
+
+        //    map.setCenter(latlngbounds.getCenter());
+        //    map.fitBounds(latlngbounds);
+        //}
+
+        var map = null;
+        var directionsService = null;
+        var directionsRenderer = null;
+        var originMarker = null;
+        var destinationMarker = null;
+
+        function initMap() {
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: {
+                    lat: 31.95679490140756,
+                    lng: 35.85974687073398
+                },
+                zoom: 10
+            });
+
+            google.maps.event.addListener(map, 'click', function (e) {
+                placeMarker(e.latLng);
+            });
+
+            directionsService = new google.maps.DirectionsService();
+            directionsRenderer = new google.maps.DirectionsRenderer({
+                suppressMarkers: true,
+                map: map
+            });
+
+        }
+
+        function placeMarker(location) {
+
+            if (originMarker != null && destinationMarker != null) {
+                alert('You can not add more than two markers.');
+            }
+
+            if (originMarker == null) {
+                originMarker = new google.maps.Marker({
+                    position: location,
+                    map: map,
+                    icon: 'https://img.icons8.com/fluent/marker.png',
+                    draggable: true,
+                    title: 'Origin Marker',
+                    animation: google.maps.Animation.DROP
+                });
+
+                originMarker.addListener('dragend', () => calculateAndDisplayRoute());
+            } else if (destinationMarker == null) {
+                destinationMarker = new google.maps.Marker({
+                    position: location,
+                    map: map,
+                    icon: 'https://img.icons8.com/fluent/marker-storm.png',
+                    draggable: true,
+                    title: 'Destination Marker',
+                    animation: google.maps.Animation.DROP
+                });
+
+                destinationMarker.addListener('dragend', () => calculateAndDisplayRoute());
+            }
+
+            if (originMarker != null && destinationMarker != null) {
+                calculateAndDisplayRoute();
+            }
+        }
+
+        function calculateAndDisplayRoute() {
+
+            if (originMarker == null || destinationMarker == null) {
+                return;
+            }
+
+            directionsService.route({
+                origin: originMarker.getPosition(),
+                destination: destinationMarker.getPosition(),
+                travelMode: google.maps.TravelMode.DRIVING
+            }, function (response, status) {
+                console.log("Trying to draw the route", response);
+                if (status == google.maps.DirectionsStatus.OK) {
+                    directionsRenderer.setDirections(response);
+                    var directionsData = response.routes[0].legs[0];
+                    var convert = directionsData.distance.value / 1000;
+                    if (convert < 1) {
+                        window.alert('Distance is too short.')
+
+                        document.getElementById('origin').innerHTML = "Origin (Latitude, Longitude): ";
+                        document.getElementById('destination').innerHTML = "Destination (Latitude, Longitude): ";
+                        document.getElementById('distance').innerHTML = "Distance: ";
+                        document.getElementById('duration').innerHTML = "Duration: ";
+                    }
+                    else {
+                        if (!directionsData) {
+                            window.alert('Directions request failed.');
+                        }
+                        else {
+                            document.getElementById('origin').innerHTML = "Origin (Latitude, Longitude): " + originMarker.getPosition();
+                            document.getElementById('destination').innerHTML = "Destination (Latitude, Longitude): " + destinationMarker.getPosition();
+                            document.getElementById('distance').innerHTML = "Distance: " + directionsData.distance.text;
+                            document.getElementById('duration').innerHTML = "Duration: " + directionsData.duration.text;
+                        }
+                    }
+                } else {
+                    window.alert('Directions request failed due to ' + status);
+                }
+            });
+        }
+    </script>
+
+    
+}

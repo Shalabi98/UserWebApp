@@ -1,12 +1,14 @@
-﻿using System;
+﻿using Cultures.Extensions;
+using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace UserWebApp.Models
 {
     public enum Gender
     {
-        Male = 1, 
+        Male = 1,
         Female = 2
     }
     public class User
@@ -18,10 +20,6 @@ namespace UserWebApp.Models
         [DisplayName("Username")]
         [StringLength(30, MinimumLength = 8)]
         public string UserName { get; set; }
-
-        [Required]
-        [DataType(DataType.Password)]
-        public string Password { get; set; }
 
         [Required]
         [DisplayName("First Name")]
@@ -56,5 +54,32 @@ namespace UserWebApp.Models
 
         [DisplayName("Is Active")]
         public bool IsActive { get; set; }
+
+        [DisplayName("Location")]
+        public double Latitude { get; set; }
+
+        public double Longitude { get; set; }
+
+        [Required]
+        [DisplayName("Time Zone")]
+        public string TimeZoneId { get; set; }
+
+        [Required]
+        [DisplayName("Culture")]
+        public string Culture { get; set; }
+
+        [Required]
+        [DisplayName("Registration Date")]
+        public DateTime RegistrationDate { get; set; }
+
+        [NotMapped]
+        [DisplayName("Registration Date")]
+        public string DisplayRegistrationDate
+        {
+            get
+            {
+                return RegistrationDate.ToLocalTime(TimeZoneId).ToFormat(Culture);
+            }
+        }
     }
 }

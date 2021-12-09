@@ -10,15 +10,16 @@
     }
 </style>
 <h5>Edit User Form</h5>
-<div class="row">
-    <div class="col-md-6">
-        <div class="panel-heading">
-            Edit an Existing User Record
-        </div>
-        <hr />
-        <form asp-action="EditUser">
+<form asp-action="EditUser">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="panel-heading">
+                Edit an Existing User Record
+            </div>
+            <hr />
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="UserId" />
+            <input type="hidden" asp-for="RegistrationDate" />
             @if (@ViewBag.UserEditMessage != null)
             {
                 <div class="alert alert-info alert-dismissible" role="alert">
@@ -30,7 +31,7 @@
             }
             <div class="form-group">
                 <label asp-for="UserName" class="control-label"></label>
-                <input asp-for="UserName" class="form-control" readonly/>
+                <input asp-for="UserName" class="form-control" readonly />
                 <span asp-validation-for="UserName" class="text-danger"></span>
             </div>
             <div class="form-group required">
@@ -47,6 +48,16 @@
                 @Html.LabelFor(model => model.Gender, new { @class = "control-label" })
                 @Html.DropDownList("Gender", (IEnumerable<SelectListItem>)ViewBag.GenderList, new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.Gender, null, new { @class = "text-danger" })
+            </div>
+            <div class="form-group required">
+                @Html.LabelFor(model => model.TimeZoneId, new { @class = "control-label" })
+                @Html.DropDownListFor(model => model.TimeZoneId, (IEnumerable<SelectListItem>)ViewBag.TimeZoneList, "Select Time Zone", new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.TimeZoneId, null, new { @class = "text-danger" })
+            </div>
+            <div class="form-group required">
+                @Html.LabelFor(model => model.Culture, new { @class = "control-label" })
+                @Html.DropDownListFor(model => model.Culture, (IEnumerable<SelectListItem>)ViewBag.CultureList, "Select Culture", new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Culture, null, new { @class = "text-danger" })
             </div>
             <div class="form-group required">
                 <label asp-for="Age" class="control-label"></label>
@@ -78,10 +89,71 @@
                     <a asp-action="Index" class="btn btn-outline-info btn-block"><i class="fa fa-table"></i> User Records </a>
                 </div>
             </div>
-        </form>
+        </div>
+        <div class="col-md-6">
+            <div>
+                <label asp-for="Latitude"></label>
+                <input type="hidden" asp-for="Latitude" />
+                <input type="hidden" asp-for="Longitude" />
+                <div id="map" class="col-md-12" style="height:500px; width:100%"></div>
+            </div>
+        </div>
     </div>
-</div>
+</form>
+
+
+<script defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA9thXarvNAj0azH0DybEg2N7BfSF0GyW8&callback=initMap"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        var map = null;
+        var userMarker = null;
+        var lat = 0;
+        var long = 0;
+
+        function initMap() {
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: {
+                    lat: parseFloat($('#Latitude').val()),
+                    lng: parseFloat($('#Longitude').val())
+                },
+                zoom: 7
+            });
+
+            userMarker = new google.maps.Marker({
+                position: { lat: parseFloat($('#Latitude').val()), lng: parseFloat($('#Longitude').val())},
+                map: map,
+                icon: 'https://img.icons8.com/fluent/pin.png',
+                title: 'Your Marker',
+                animation: google.maps.Animation.BOUNCE
+            });
+
+            google.maps.event.addListener(map, 'click', function (e) {
+                placeMarker(e.latLng);
+            });
+        }
+
+        function placeMarker(location) {
+            if (userMarker) {
+                //userMarker.setMap(null);
+                //userMarker = null;
+                //placeMarker(location);
+                userMarker.setPosition(location);
+            } else {
+                userMarker = new google.maps.Marker({
+                    position: location,
+                    map: map,
+                    icon: 'https://img.icons8.com/fluent/pin.png',
+                    title: 'Your Marker',
+                    animation: google.maps.Animation.BOUNCE
+                });
+            }
+            lat = userMarker.getPosition().lat();
+            lng = userMarker.getPosition().lng();
+            $('#Latitude').val(lat);
+            $('#Longitude').val(lng);
+        }
+    </script>
 }

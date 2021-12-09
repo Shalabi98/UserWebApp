@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Cultures.Extensions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using UserWebApp.Models;
 
@@ -24,10 +26,11 @@ namespace UserWebApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateUser([Bind("UserId,UserName,FirstName,LastName,Gender,Age,Email,MobilePhoneNo,IsActive")] User user)
+        public IActionResult CreateUser([Bind("UserId,UserName,FirstName,LastName,Gender,Age,Email,MobilePhoneNo,IsActive,Latitude,Longitude,TimeZoneId,Culture")] User user)
         {
             if (ModelState.IsValid)
             {
+                user.RegistrationDate = DateTime.UtcNow;
                 var isUserExist = db.User.Any(s => s.UserName.Equals(user.UserName));
                 var isEmailExist = db.User.Any(s => s.Email.Equals(user.Email));
                 var isPhoneExist = db.User.Any(s => s.MobilePhoneNo.Equals(user.MobilePhoneNo));
@@ -55,6 +58,9 @@ namespace UserWebApp.Controllers
                 }
             }
             GetGenderDropDown();
+            GetTimeZonesId();
+            GetCultures();
+
             return View(user);
         }
 
@@ -62,13 +68,19 @@ namespace UserWebApp.Controllers
         public IActionResult CreateUser()
         {
             GetGenderDropDown();
+            GetTimeZonesId();
+            GetCultures();
+
             return View(new User());
         }
 
         [HttpPost]
-        public IActionResult EditUser([Bind("UserId,UserName,FirstName,LastName,Gender,Age,Email,MobilePhoneNo,IsActive")] User user)
+        public IActionResult EditUser([Bind("UserId,UserName,FirstName,LastName,Gender,Age,Email,MobilePhoneNo,IsActive,Latitude,Longitude,TimeZoneId,Culture,RegistrationDate")] User user)
         {
             GetGenderDropDown();
+            GetTimeZonesId();
+            GetCultures();
+
             if (ModelState.IsValid)
             {
                 var isEmailExist = db.User.Any(s => s.Email.Equals(user.Email) && s.UserId != user.UserId);
@@ -103,19 +115,10 @@ namespace UserWebApp.Controllers
             else
             {
                 GetGenderDropDown();
+                GetTimeZonesId();
+                GetCultures();
                 return View(db.User.Find(id));
             }
-        }
-
-        [HttpGet]
-        public void GetGenderDropDown()
-        {
-            var gender = new List<SelectListItem>
-                {
-                    new SelectListItem { Text="Male", Value = "1"},
-                    new SelectListItem { Text="Female", Value = "2"},
-                }.AsEnumerable();
-            ViewBag.GenderList = gender;
         }
 
         [HttpGet]
@@ -138,41 +141,26 @@ namespace UserWebApp.Controllers
         }
 
         [HttpGet]
-        public IActionResult SortData(string sort)
+        public void GetGenderDropDown()
         {
-            ViewBag.Username = sort == "Username" ? "Username_desc" : "Username";
-            ViewBag.FirstName = String.IsNullOrEmpty(sort) ? "FirstName_desc" : "";
-            ViewBag.LastName = sort == "LastName" ? "LastName_desc" : "LastName";
-            ViewBag.Age = sort == "Age" ? "Age_desc" : "Age";
-            var users = db.User.Where(u => u.UserName != null);
-            switch (sort)
-            {
-                case "Username":
-                    users = users.OrderBy(u => u.UserName);
-                    break;
-                case "Username_desc":
-                    users = users.OrderByDescending(u => u.UserName);
-                    break;
-                case "FirstName_desc":
-                    users = users.OrderByDescending(u => u.FirstName);
-                    break;
-                case "LastName":
-                    users = users.OrderBy(u => u.LastName);
-                    break;
-                case "LastName_desc":
-                    users = users.OrderByDescending(u => u.LastName);
-                    break;
-                case "Age":
-                    users = users.OrderBy(u => u.Age);
-                    break;
-                case "Age_desc":
-                    users = users.OrderByDescending(u => u.Age);
-                    break;
-                default:
-                    users = users.OrderBy(u => u.FirstName);
-                    break;
-            }
-            return View(users.ToList());
+            var gender = new List<SelectListItem>
+                {
+                    new SelectListItem { Text = "Male", Value = "1"},
+                    new SelectListItem { Text = "Female", Value = "2"},
+                }.AsEnumerable();
+            ViewBag.GenderList = gender;
+        }
+
+        [HttpGet]
+        public void GetTimeZonesId()
+        {
+            ViewBag.TimeZoneList = new SelectList(TimeZoneInfo.GetSystemTimeZones(), "Id", "DisplayName");
+        }
+
+        [HttpGet]
+        public void GetCultures()
+        {
+            ViewBag.CultureList = new SelectList(CultureInfo.GetCultures(CultureTypes.SpecificCultures), "Name", "NativeName");
         }
     }
 }

@@ -1,7 +1,7 @@
-﻿@page
-@{
+﻿@{
     Layout = "_Layout";
 }
+
 <div class="text-center">
     <h1 class="display-4" style="color: darksalmon">Hello World</h1>
     <p>A complete CRUD Asp.Net Core and Razor Pages Web Application for Managing Student Course Enrollment Records and APIs for Managing User Records</p>
@@ -18,6 +18,12 @@
             </a> &nbsp;&nbsp;
             <a asp-controller="Users" asp-action="Index" class="btn btn-outline-dark">
                 <i class="fas fa-users" style="padding: 0px;"></i>&nbsp;Users
+            </a> &nbsp;&nbsp;
+            <a asp-action="Maps" class="btn btn-outline-success">
+                <i class="fas fa-map" style="padding: 0px;"></i>&nbsp;Maps
+            </a> &nbsp;&nbsp;
+            <a asp-action="Client" class="btn btn-outline-primary">
+                <i class="fab fa-node" style="padding: 0px;"></i>&nbsp;Web Socket
             </a> &nbsp;&nbsp;
         </div>
     </div>
@@ -60,30 +66,93 @@
         </div>
     </div>
 </div>
+<hr />
+@*<div class="row">
+        <div id="kendoGrid"></div>
+    </div>*@
 
 @section Scripts{
-<script>
-    // build SignalR connection
-    const connection = new signalR.HubConnectionBuilder()
-        .withUrl("/chatHub")
-        .build();
+    <script>
+        // build SignalR connection
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/chatHub")
+            .build();
 
-    connection.start().catch(err => console.error(err.toString()));
+        connection.start().catch(err => console.error(err.toString()));
 
-    // to receive a message
-    connection.on("ReceiveMessage", (user, message) => {
-        const rec_msg = user + ": " + message;
-        const li = document.createElement("li");
-        li.textContent = rec_msg;
-        document.getElementById("messageList").appendChild(li);
-    });
+        // to receive a message
+        connection.on("ReceiveMessage", (user, message) => {
+            const rec_msg = user + ": " + message;
+            const li = document.createElement("li");
+            li.textContent = rec_msg;
+            document.getElementById("messageList").appendChild(li);
+        });
 
-    // to send a message
-    document.getElementById("sendMessage").addEventListener("click", event => {
-        const message = document.getElementById("userMessage").value; 
-        const sendTo = document.getElementById("sendTo").value;
-        connection.invoke("SendMessage", sendTo, message).catch(err => console.error(err.toString()));
-        event.preventDefault();
-    });
-</script>
+        // to send a message
+        document.getElementById("sendMessage").addEventListener("click", event => {
+            const message = document.getElementById("userMessage").value;
+            const sendTo = document.getElementById("sendTo").value;
+            connection.invoke("SendMessage", sendTo, message).catch(err => console.error(err.toString()));
+            event.preventDefault();
+        });
+
+        $(document).ready(function () {
+            $("#kendoGrid").kendoGrid({
+                dataSource: [
+                    { CustomerID: "1", ContactName: "Imran", CompanyName: "ACACUS", Country: "Jordan" },
+                    { CustomerID: "2", ContactName: "Bashar", CompanyName: "ACACUS", Country: "Jordan" },
+                    { CustomerID: "3", ContactName: "Jarwan", CompanyName: "ACACUS", Country: "Jordan" },
+                    { CustomerID: "4", ContactName: "Jamil", CompanyName: "ACACUS", Country: "Jordan" },
+                    { CustomerID: "5", ContactName: "Bilal", CompanyName: "ACACUS", Country: "Jordan" },
+                    { CustomerID: "6", ContactName: "Ayoub", CompanyName: "ACACUS", Country: "Jordan" },
+                ],
+                filterable: true,
+                sortable: true,
+                columns: customerHelper.generateColumns(),
+                editable: false,
+                navigatable: true,
+                selectable: "row"
+            });
+        });
+
+        var customerHelper = {
+            generateColumns: function () {
+                return columns = [
+                    { field: "CustomerID", title: "ID", width: 40, editable: false },
+                    { field: "ContactName", title: "Name", width: 60, editable: false },
+                    { field: "CompanyName", title: "Company", width: 60, editable: false },
+                    { field: "Country", title: "Country", width: 60, editable: false },
+                ]
+            },
+            gridDataSource: function () {
+                var gridData = new kendo.data.DataSource({
+                    type: "json",
+                    serverPaging: true,
+                    serverSorting: true,
+                    serverFiltering: true,
+                    allowUnsort: true,
+                    pageSize: 5,
+                    transport: {
+                        read: {
+                            url: '../Customer/GetCustomer',
+                            type: "GET",
+                            dataType: "json",
+                            contentType: "application/json; charset=utf-8"
+                        },
+                        parameterMap: function (options) {
+                            return options;
+                        }
+                    },
+                    schema: {
+                        data: "Items", total: "TotalCount",
+                        model: {
+                            fields: {
+                            }
+                        },
+                    }
+                });
+                return gridData;
+            }
+        }
+    </script>
 }

@@ -1,0 +1,266 @@
+﻿@model UserWebApp.Models.Ride
+@using UserWebApp.Models;
+
+@{
+    Layout = "_Layout";
+}
+
+<div class="container">
+    <center>
+        <h4>Create a Ride Request</h4>
+        <br />
+        <label asp-for="OriginLat"></label>
+    </center>
+    <form asp-controller="Rides" asp-action="CreateRideRequest">
+        <div class="form-group">
+            <input type="hidden" asp-for="RideId" />
+            <input type="hidden" asp-for="OriginLat" />
+            <input type="hidden" asp-for="OriginLng" />
+            <input type="hidden" asp-for="DestinationLat" />
+            <input type="hidden" asp-for="DestinationLng" />
+            <input type="hidden" asp-for="Distance" />
+            <input type="hidden" asp-for="Duration" />
+            <input type="hidden" asp-for="Price" />
+            <input type="hidden" asp-for="StudentId" />
+            <div id="map" style="height:500px; width:100%"></div>
+            <br />
+            <div class="card text-white bg-dark mb-3">
+                <div class="card-body">
+                    <div class="card-header text-danger"><h4><i class="fas fa-car text-danger"></i>&nbsp;<b>Ride Request Details</b></h4></div>
+                    <p class="card-text">
+                        <div id="oLatLng" class="text-danger"></div>
+                        <div id="dLatLng" class="text-danger"></div>
+                        <div id="distance" class="text-danger"></div>
+                        <div id="duration" class="text-danger"></div>
+                        <div id="price" class="text-danger"></div>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <button type="submit" class="btn btn-outline-success btn-block"><i class="fas fa-car"></i>&nbsp;Book Ride</button>
+            </div>
+            <div class="form-group col-md-6">
+                <a asp-controller="Students" asp-action="Index" class="btn btn-outline-info btn-block"><i class="fa fa-user-graduate"></i> Student Records </a>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA9thXarvNAj0azH0DybEg2N7BfSF0GyW8&callback=initMap"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+
+@section Scripts{
+    <script>
+        var map = null;
+        var directionsService = null;
+        var directionsRenderer = null;
+        var originMarker = null;
+        var destinationMarker = null;
+        var oLat = 0;
+        var oLng = 0;
+        var dLat = 0;
+        var dLng = 0;
+        var distance = 0;
+        var duration = 0;
+        var price = 0;
+
+        function initMap() {
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: {
+                    lat: 31.95679490140756,
+                    lng: 35.85974687073398
+                },
+                zoom: 10,
+                styles: [
+                    { elementType: "geometry", stylers: [{ color: "#242f3e" }] },
+                    { elementType: "labels.text.stroke", stylers: [{ color: "#242f3e" }] },
+                    { elementType: "labels.text.fill", stylers: [{ color: "#746855" }] },
+                    {
+                        featureType: "administrative.locality",
+                        elementType: "labels.text.fill",
+                        stylers: [{ color: "#d59563" }],
+                    },
+                    {
+                        featureType: "poi",
+                        elementType: "labels.text.fill",
+                        stylers: [{ color: "#d59563" }],
+                    },
+                    {
+                        featureType: "poi.park",
+                        elementType: "geometry",
+                        stylers: [{ color: "#263c3f" }],
+                    },
+                    {
+                        featureType: "poi.park",
+                        elementType: "labels.text.fill",
+                        stylers: [{ color: "#6b9a76" }],
+                    },
+                    {
+                        featureType: "road",
+                        elementType: "geometry",
+                        stylers: [{ color: "#38414e" }],
+                    },
+                    {
+                        featureType: "road",
+                        elementType: "geometry.stroke",
+                        stylers: [{ color: "#212a37" }],
+                    },
+                    {
+                        featureType: "road",
+                        elementType: "labels.text.fill",
+                        stylers: [{ color: "#9ca5b3" }],
+                    },
+                    {
+                        featureType: "road.highway",
+                        elementType: "geometry",
+                        stylers: [{ color: "#746855" }],
+                    },
+                    {
+                        featureType: "road.highway",
+                        elementType: "geometry.stroke",
+                        stylers: [{ color: "#1f2835" }],
+                    },
+                    {
+                        featureType: "road.highway",
+                        elementType: "labels.text.fill",
+                        stylers: [{ color: "#f3d19c" }],
+                    },
+                    {
+                        featureType: "transit",
+                        elementType: "geometry",
+                        stylers: [{ color: "#2f3948" }],
+                    },
+                    {
+                        featureType: "transit.station",
+                        elementType: "labels.text.fill",
+                        stylers: [{ color: "#d59563" }],
+                    },
+                    {
+                        featureType: "water",
+                        elementType: "geometry",
+                        stylers: [{ color: "#17263c" }],
+                    },
+                    {
+                        featureType: "water",
+                        elementType: "labels.text.fill",
+                        stylers: [{ color: "#515c6d" }],
+                    },
+                    {
+                        featureType: "water",
+                        elementType: "labels.text.stroke",
+                        stylers: [{ color: "#17263c" }],
+                    },
+                ]
+            });
+
+            google.maps.event.addListener(map, 'click', function (e) {
+                placeMarker(e.latLng);
+            });
+
+            directionsService = new google.maps.DirectionsService();
+            directionsRenderer = new google.maps.DirectionsRenderer({
+                suppressMarkers: true,
+                map: map,
+                polylineOptions: {
+                    strokeColor: "#df4759"
+                }
+            });
+
+        }
+
+        function placeMarker(location) {
+
+            if (originMarker != null && destinationMarker != null) {
+                alert('You can not add more than two markers.');
+            }
+
+            if (originMarker == null) {
+                originMarker = new google.maps.Marker({
+                    position: location,
+                    map: map,
+                    icon: 'https://img.icons8.com/fluent/marker.png',
+                    draggable: true,
+                    title: 'Origin Marker',
+                    animation: google.maps.Animation.DROP
+                });
+                originMarker.addListener('dragend', () => calculateAndDisplayRoute());
+            } else if (destinationMarker == null) {
+                destinationMarker = new google.maps.Marker({
+                    position: location,
+                    map: map,
+                    icon: 'https://img.icons8.com/fluent/marker-storm.png',
+                    draggable: true,
+                    title: 'Destination Marker',
+                    animation: google.maps.Animation.DROP
+                });
+                destinationMarker.addListener('dragend', () => calculateAndDisplayRoute());
+            }
+            if (originMarker != null && destinationMarker != null) {
+                calculateAndDisplayRoute();
+            }
+
+            oLat = originMarker.getPosition().lat();
+            oLng = originMarker.getPosition().lng();
+            dLat = destinationMarker.getPosition().lat();
+            dLng = destinationMarker.getPosition().lng();
+            $('#OriginLat').val(oLat);
+            $('#OriginLng').val(oLng);
+            $('#DestinationLat').val(dLat);
+            $('#DestinationLng').val(dLng);
+        }
+
+        function calculateAndDisplayRoute() {
+
+            if (originMarker == null || destinationMarker == null) {
+                return;
+            }
+
+            directionsService.route({
+                origin: originMarker.getPosition(),
+                destination: destinationMarker.getPosition(),
+                travelMode: google.maps.TravelMode.DRIVING
+            }, function (response, status) {
+                console.log("Trying to draw the route", response);
+                if (status == google.maps.DirectionsStatus.OK) {
+                    directionsRenderer.setDirections(response);
+                    var directionsData = response.routes[0].legs[0];
+                    var convert = directionsData.distance.value / 1000;
+
+                    distance = directionsData.distance.value;
+                    $('#Distance').val(distance);
+                    duration = directionsData.duration.value;
+                    $('#Duration').val(duration);
+                    price = ((0.5 * (distance / 1000)) + (0.1 * (duration / 60)));
+                    $('#Price').val(price);
+
+                    if (convert < 1) {
+                        window.alert('Distance is too short.')
+
+                        document.getElementById('oLatLng').innerHTML = "Origin (Latitude, Longitude): ";
+                        document.getElementById('dLatLng').innerHTML = "Destination (Latitude, Longitude): ";
+                        document.getElementById('distance').innerHTML = "Distance: ";
+                        document.getElementById('duration').innerHTML = "Duration: ";
+                        document.getElementById('price').innerHTML = "Price: ";
+                    }
+                    else {
+                        if (!directionsData) {
+                            window.alert('Directions request failed.');
+                        }
+                        else {
+                            document.getElementById('oLatLng').innerHTML = "Origin (Latitude, Longitude): " + originMarker.getPosition();
+                            document.getElementById('dLatLng').innerHTML = "Destination (Latitude, Longitude): " + destinationMarker.getPosition();
+                            document.getElementById('distance').innerHTML = "Distance: " + directionsData.distance.text;
+                            document.getElementById('duration').innerHTML = "Duration: " + directionsData.duration.text;
+                            document.getElementById('price').innerHTML = "Price: " + price + " JOD";
+                        }
+                    }
+                } else {
+                    window.alert('Directions request failed due to ' + status);
+                }
+                
+            });
+        }
+    </script>
+}

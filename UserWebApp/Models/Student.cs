@@ -72,6 +72,8 @@ namespace UserWebApp.Models
         [DisplayName("Is Graduating")]
         public bool IsGraduating { get; set; }
 
-        public  List<Enrollment> Enrollments { get; set; }
+        public List<Enrollment> Enrollments { get; set; }
+
+        public ICollection<Ride> Rides { get; set; }
     }
 }

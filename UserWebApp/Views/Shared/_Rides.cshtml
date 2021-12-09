@@ -1,0 +1,53 @@
+﻿@model UserWebApp.ViewModels.StudentRideDetailsViewModel
+
+<table class="table table-hover table-responsive-xl" id="tblRideDetails">
+    <thead>
+        <tr>
+            <th>
+                <i class="fas fa-road"></i>
+                @Html.DisplayName("Distance")
+            </th>
+            <th>
+                <i class="fas fa-stopwatch"></i>
+                @Html.DisplayName("Duration")
+            </th>
+            <th>
+                <a href="javascript:;">@Html.DisplayName("Price")</a>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Rides.Count() > 0)
+        {
+            foreach (var ride in Model.Rides)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(model => ride.Distance)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => ride.Duration)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => ride.Price)
+                    </td>
+                </tr>
+            }
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td><strong>@Model.TotalPrice</strong></td>
+                </tr>
+        }
+        else
+        {
+            <tr>
+                <td style="color: red" colspan="12"><b>No Record(s) Found!</b></td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+
+

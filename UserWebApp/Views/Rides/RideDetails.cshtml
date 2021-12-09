@@ -1,0 +1,52 @@
+﻿
+@{
+    Layout = "_Layout";
+}
+
+<style>
+    th, td, table {
+        text-align: center;
+    }
+</style>
+
+<div class="container">
+    <center>
+        <h4>Rides Details</h4>
+        <br />
+        <label>Displaying Details for all Ride Requests and Bookings</label>
+    </center>
+    <div id="container">
+
+    </div>
+</div>
+
+@section Scripts{
+    <script type="text/javascript">
+        var sortName = "";
+        var sortOrder = "ASC";
+
+        $(function () {
+            GetRides();
+        });
+
+        $("body").on("click", "#tblRideDetails th a", function () {
+            sortName = $(this).html();
+            sortOrder = sortOrder == "ASC" ? "DESC" : "ASC";
+            GetRides();
+        });
+
+        function GetRides() {
+            $.ajax({
+                type: "POST",
+                url: `@Url.Action("SortData", "Rides")?sortName=${sortName}&sortOrder=${sortOrder}&id=@ViewData["StudentId"]`,
+                contentType: "html",
+                success: function (res) {
+                    $("#container").html(res);
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            });
+        };
+    </script>
+}
