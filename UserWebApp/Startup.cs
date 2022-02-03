@@ -41,7 +41,7 @@ namespace UserWebApp
                 new BlobServiceClient(Configuration.GetValue<string>("AzureBlobStorage")));
             services.AddScoped<IBlobService, BlobService>(); 
 
-            services.AddDbContext<UniversityContext>(options => { options.UseSqlServer(Configuration.GetConnectionString("Database")); });
+            services.AddDbContext<UniversityContext>(options => { options.UseSqlServer(Configuration.GetConnectionString("Database"), x => x.UseNetTopologySuite()); });
 
             services.AddSingleton<IUserIdProvider, CustomMessage>();
 
@@ -49,7 +49,7 @@ namespace UserWebApp
 
             services.AddKendo();
 
-            services.AddSwaggerGen();
+            //services.AddSwaggerGen();
 
             services.AddMvc().AddFluentValidation()
             .AddMvcOptions(s => 
@@ -70,12 +70,12 @@ namespace UserWebApp
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(options =>
-                {
-                    options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
-                    options.RoutePrefix = string.Empty;
-                });
+                //app.UseSwagger();
+                //app.UseSwaggerUI(options =>
+                //{
+                //    options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+                //    options.RoutePrefix = string.Empty;
+                //});
             }
             else
             {
