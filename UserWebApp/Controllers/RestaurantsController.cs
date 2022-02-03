@@ -28,7 +28,7 @@ namespace UserWebApp.Controllers
             var aqaba = new Point(35.00314101505938, 29.542843619043456) { SRID = 4326 };
 
             //Validate SRID
-            if (!amman.isValidSrid() || !aqaba.isValidSrid())
+            if (!amman.IsValidSrid() || !aqaba.IsValidSrid())
             {
                 return View();
             }
@@ -50,8 +50,8 @@ namespace UserWebApp.Controllers
             //Set the SRID of the Polygon for Standardization
             polygon1.SRID = 4326;
 
-            //To Validate Coordinates of Polygon -> A Polygon must have the same first and last Coordinates Values.
-            if (polygon1.Coordinates.First().CoordinateValue.ToString() != polygon1.Coordinates.Last().CoordinateValue.ToString())
+            //To Validate Coordinates of Polygon -> A Polygon must have the same first and last Coordinates values as well as more than three coordinates 
+            if (polygon1.Coordinates.First().CoordinateValue.ToString() != polygon1.Coordinates.Last().CoordinateValue.ToString() && polygon1.Coordinates.Count() <= 3)
             {
                 return View();
             }
@@ -64,7 +64,7 @@ namespace UserWebApp.Controllers
                 new Coordinate { X = 31.973188517904152, Y = 35.90957636245783 }
             });
             polygon2.SRID = 4326;
-            if (polygon2.Coordinates.First().CoordinateValue.ToString() != polygon2.Coordinates.Last().CoordinateValue.ToString())
+            if (polygon2.Coordinates.First().CoordinateValue.ToString() != polygon2.Coordinates.Last().CoordinateValue.ToString() && polygon2.Coordinates.Count() <= 3)
             {
                 return View();
             }
@@ -77,7 +77,7 @@ namespace UserWebApp.Controllers
                 new Coordinate { X = 39.095395129109576, Y = -94.57007918587617 }
             });
             polygon3.SRID = 4326;
-            if (polygon3.Coordinates.First().CoordinateValue.ToString() != polygon3.Coordinates.Last().CoordinateValue.ToString())
+            if (polygon3.Coordinates.First().CoordinateValue.ToString() != polygon3.Coordinates.Last().CoordinateValue.ToString() && polygon3.Coordinates.Count() <= 3)
             {
                 return View();
             }
@@ -90,7 +90,7 @@ namespace UserWebApp.Controllers
                 new Coordinate { X = 39.089935441467844, Y = -94.56768280845736 }
             });
             polygon4.SRID = 4326;
-            if (polygon4.Coordinates.First().CoordinateValue.ToString() != polygon4.Coordinates.Last().CoordinateValue.ToString())
+            if (polygon4.Coordinates.First().CoordinateValue.ToString() != polygon4.Coordinates.Last().CoordinateValue.ToString() && polygon4.Coordinates.Count() <= 3)
             {
                 return View();
             }
@@ -100,16 +100,15 @@ namespace UserWebApp.Controllers
             //Return intersected polygon object 
             var polygonIntersection = polygon1.Intersection(polygon2);
             //Check geometry type of the intersect 
-            var check = polygonIntersection.GeometryType;
+            var intersectionType = polygonIntersection.GeometryType; 
 
             //MultiPolygon 
             //var multiPolygon1 = new MultiPolygon(new Polygon[] { polygon1, polygon2});
             //var multiPolygon2 = new MultiPolygon(new Polygon[] { polygon3, polygon4});
             var multiPolygon1 = geometryFactory.CreateMultiPolygon(new Polygon[] { polygon1, polygon2 });
-            multiPolygon1.SRID = 2855;
+            multiPolygon1.SRID = 4326;
             var multiPolygon2 = geometryFactory.CreateMultiPolygon(new Polygon[] { polygon3, polygon4 });
             multiPolygon2.SRID = 4326;
-
 
             //Validate Multipolygon Operation
             var isValidOp1 = new NetTopologySuite.Operation.Valid.IsValidOp(multiPolygon1);
@@ -139,7 +138,7 @@ namespace UserWebApp.Controllers
             //Check if a Geometry object exists within another Geometry object
             var isWithinAmman = polygon1.Within(ammanPolygon);
 
-            var courses = db.Restaurants.OrderBy(r => r.Location.Distance(referenceLocation))
+            var restaurants = db.Restaurants.OrderBy(r => r.Location.Distance(referenceLocation))
                 .Select(r => new Restaurant
                 {
                     Name = r.Name,
@@ -147,7 +146,7 @@ namespace UserWebApp.Controllers
                     Distance = r.Location.Distance(referenceLocation),
                     IsWithinDistance = r.Location.IsWithinDistance(referenceLocation, 20000)
                 }).ToList();
-            return View(courses);
+            return View(restaurants);
         }
     }
 }

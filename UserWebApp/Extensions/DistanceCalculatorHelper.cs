@@ -51,7 +51,7 @@ namespace UserWebApp.Extensions
             return result;
         }
 
-        public static bool isValidSrid (this Geometry geometry)
+        public static bool IsValidSrid (this Geometry geometry)
         {
             var sridLookup = new Dictionary<int, string>();
             sridLookup.Add(4326, GeocentricCoordinateSystem.WGS84.WKT);
