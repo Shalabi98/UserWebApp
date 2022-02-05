@@ -39,16 +39,6 @@ namespace UserWebApp.Extensions
                     "
             });
 
-        public static Geometry ProjectTo(this Geometry geometry, int srid)
-        {
-            var transformation = _coordinateSystemServices.CreateTransformation(geometry.SRID, srid);
-
-            var result = geometry.Copy();
-            result.Apply(new MathTransformFilter(transformation.MathTransform));
-
-            return result;
-        }
-
         public static bool IsValidSrid (this Geometry geometry)
         {
             var sridLookup = new Dictionary<int, string>();
@@ -60,6 +50,16 @@ namespace UserWebApp.Extensions
             } 
 
             return true;
+        }
+
+        public static Geometry ProjectTo(this Geometry geometry, int srid)
+        {
+            var transformation = _coordinateSystemServices.CreateTransformation(geometry.SRID, srid);
+
+            var result = geometry.Copy();
+            result.Apply(new MathTransformFilter(transformation.MathTransform));
+
+            return result;
         }
 
         public class MathTransformFilter : ICoordinateSequenceFilter
