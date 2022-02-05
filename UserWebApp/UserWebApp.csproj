@@ -42,8 +42,6 @@
     <PackageReference Include="System.Collections" Version="4.3.0" />
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
     <PackageReference Include="System.ServiceModel.Primitives" Version="4.8.1" />
-    <PackageReference Include="Telerik.Core.Export.Trial" Version="2021.2.616" />
-    <PackageReference Include="Telerik.UI.for.AspNet.Core.Trial" Version="2021.2.616" />
   </ItemGroup>
 
   <ItemGroup>

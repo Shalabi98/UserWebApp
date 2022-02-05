@@ -47,8 +47,6 @@ namespace UserWebApp
 
             services.AddSignalR();
 
-            services.AddKendo();
-
             //services.AddSwaggerGen();
 
             services.AddMvc().AddFluentValidation()

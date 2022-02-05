@@ -6,15 +6,13 @@ using System.Collections.Generic;
 
 namespace UserWebApp.Extensions
 {
-    public static class DistanceCalculatorHelper
+    public static class CoordinateTransformationHelper 
     {
         public static readonly CoordinateSystemServices _coordinateSystemServices
-        = new CoordinateSystemServices(
-            new Dictionary<int, string>
+        = new CoordinateSystemServices( new Dictionary<int, string>
             {
                 // Coordinate systems:
                 [4326] = GeographicCoordinateSystem.WGS84.WKT,
-
                 [2855] =
                     @"
                     PROJCS[""NAD83(HARN) / Washington North"",
@@ -38,7 +36,7 @@ namespace UserWebApp.Extensions
                         UNIT[""metre"",1,
                             AUTHORITY[""EPSG"",""9001""]],
                         AUTHORITY[""EPSG"",""2855""]]
-                "
+                    "
             });
 
         public static Geometry ProjectTo(this Geometry geometry, int srid)
