@@ -144,11 +144,11 @@ namespace UserWebApp.Controllers
                 {
                     Name = r.Name,
                     City = r.City,
-                    Distance = r.DeliveryAreaCoverage.Distance(referenceLocation),
-                    IsWithinDistance = r.DeliveryAreaCoverage.IsWithinDistance(referenceLocation, 5000), 
-                    Within = r.DeliveryAreaCoverage.Within(ammanPolygon), 
-                    Intersects = r.DeliveryAreaCoverage.Intersects(ammanPolygon),
-                    Intersection = r.DeliveryAreaCoverage.Intersection(ammanPolygon)
+                    Distance = r.Location.Distance(referenceLocation),
+                    IsWithinDistance = r.Location.IsWithinDistance(referenceLocation, 5000), 
+                    Within = r.Location.Within(ammanPolygon), 
+                    Intersects = r.Location.Intersects(referenceLocation),
+                    Intersection = r.Location.Intersection(referenceLocation)
                 }).ToList();
             return View(restaurants);
         }
