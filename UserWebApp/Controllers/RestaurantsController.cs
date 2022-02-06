@@ -139,6 +139,12 @@ namespace UserWebApp.Controllers
             //Check if a Geometry object exists within another Geometry object
             var isWithinAmman = newPoint.Within(ammanPolygon);
 
+            //Reverse a Polygon if its shell orientation is not counter-clockwise
+            if (!ammanPolygon.Shell.IsCCW)
+            {
+                ammanPolygon = ammanPolygon.Reverse() as Polygon;
+            }
+
             var restaurants = db.Restaurants.OrderBy(r => r.Location.Distance(referenceLocation))
                 .Select(r => new Restaurant
                 {
