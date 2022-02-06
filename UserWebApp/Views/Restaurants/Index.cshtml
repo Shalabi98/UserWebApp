@@ -31,7 +31,19 @@
                 </th>
                 <th>
                     <i class="fas fa-map"></i>
-                    @Html.DisplayName("Is Within Range?")
+                    @Html.DisplayName("Is Within Distance")
+                </th>
+                <th>
+                    <i class="fas fa-map"></i>
+                    @Html.DisplayName("Within")
+                </th>
+                 <th>
+                    <i class="fas fa-map"></i>
+                    @Html.DisplayName("Intersects")
+                </th>
+                <th>
+                    <i class="fas fa-map"></i>
+                    @Html.DisplayName("Intersection Geometry Type")
                 </th>
             </tr>
         </thead>
@@ -53,6 +65,18 @@
                         <td>
                             @Html.DisplayFor(model => restaurant.IsWithinDistance)
                         </td>
+                        <td>
+                            @Html.DisplayFor(model => restaurant.Within)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(model => restaurant.Intersects)
+                        </td>
+                        @if (restaurant.Intersection != null)
+                        {
+                            <td>
+                                @Html.DisplayFor(model => restaurant.Intersection.GeometryType)
+                            </td>
+                        }
                     </tr>
                 }
             }

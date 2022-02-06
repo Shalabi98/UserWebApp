@@ -126,25 +126,29 @@ namespace UserWebApp.Controllers
             //Create a Reference Polygon
             var ammanPolygon = geometryFactory.CreatePolygon(new Coordinate[]
             {
-                new Coordinate { X = 32.05746209539408, Y = 35.944914401626164 },
-                new Coordinate { X = 31.99578659548469, Y = 36.05840058444662 },
-                new Coordinate { X = 31.904430696264882, Y = 36.06422038869383 },
-                new Coordinate { X = 31.779595771940045, Y = 35.87798665278333 },
-                new Coordinate { X = 31.805565454728104, Y = 35.75140591040666 },
-                new Coordinate { X = 32.00565746582009, Y = 35.67720340625483 },
-                new Coordinate { X = 32.05746209539408, Y = 35.944914401626164 }
+                new Coordinate (35.944914401626164, 32.05746209539408),
+                new Coordinate (36.05840058444662, 31.99578659548469),
+                new Coordinate (36.06422038869383, 31.904430696264882),
+                new Coordinate (35.87798665278333, 31.779595771940045),
+                new Coordinate (35.75140591040666, 31.805565454728104),
+                new Coordinate (35.67720340625483, 32.00565746582009),
+                new Coordinate (35.944914401626164, 32.05746209539408)
             });
 
+            var newPoint = new Point(35.00316439395086, 29.54277244939043);
             //Check if a Geometry object exists within another Geometry object
-            var isWithinAmman = polygon1.Within(ammanPolygon);
+            var isWithinAmman = newPoint.Within(ammanPolygon);
 
             var restaurants = db.Restaurants.OrderBy(r => r.Location.Distance(referenceLocation))
                 .Select(r => new Restaurant
                 {
                     Name = r.Name,
                     City = r.City,
-                    Distance = r.Location.Distance(referenceLocation),
-                    IsWithinDistance = r.Location.IsWithinDistance(referenceLocation, 20000)
+                    Distance = r.DeliveryAreaCoverage.Distance(referenceLocation),
+                    IsWithinDistance = r.DeliveryAreaCoverage.IsWithinDistance(referenceLocation, 5000), 
+                    Within = r.DeliveryAreaCoverage.Within(ammanPolygon), 
+                    Intersects = r.DeliveryAreaCoverage.Intersects(ammanPolygon),
+                    Intersection = r.DeliveryAreaCoverage.Intersection(ammanPolygon)
                 }).ToList();
             return View(restaurants);
         }

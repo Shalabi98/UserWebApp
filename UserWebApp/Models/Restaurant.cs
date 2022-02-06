@@ -12,8 +12,17 @@ namespace UserWebApp.Models
 
         public Point Location { get; set; }
 
+        public Polygon DeliveryAreaCoverage { get; set; }
+
         public double Distance { get; set; }
 
         public bool IsWithinDistance { get; set; }
+
+        public bool Within { get; set; }
+
+        public bool Intersects { get; set; }
+
+        public Geometry Intersection { get; set; }
+
     }
 }

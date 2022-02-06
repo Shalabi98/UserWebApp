@@ -86,6 +86,9 @@ namespace UserWebApp.Migrations
                     b.Property<string>("City")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Polygon>("DeliveryAreaCoverage")
+                        .HasColumnType("geography");
+
                     b.Property<double>("Distance")
                         .HasColumnType("float");
 
@@ -107,37 +110,61 @@ namespace UserWebApp.Migrations
                         {
                             RestaurantId = 1,
                             City = "Amman",
+                            DeliveryAreaCoverage = (NetTopologySuite.Geometries.Polygon)new NetTopologySuite.IO.WKTReader().Read("SRID=4326;POLYGON ((35.944914401626164 32.05746209539408, 36.05840058444662 31.99578659548469, 36.06422038869383 31.904430696264882, 35.87798665278333 31.779595771940045, 35.75140591040666 31.805565454728104, 35.67720340625483 32.00565746582009, 35.944914401626164 32.05746209539408))"),
                             Distance = 0.0,
                             IsWithinDistance = false,
-                            Location = (NetTopologySuite.Geometries.Point)new NetTopologySuite.IO.WKTReader().Read("SRID=4326;POINT (35.86401397105961 31.956700034429126)"),
-                            Name = "Chapatti"
+                            Location = (NetTopologySuite.Geometries.Point)new NetTopologySuite.IO.WKTReader().Read("SRID=4326;POINT (35.9323535711242 31.95302249260005)"),
+                            Name = "Al Quds"
                         },
                         new
                         {
                             RestaurantId = 2,
-                            City = "Zarqa",
+                            City = "Amman",
+                            DeliveryAreaCoverage = (NetTopologySuite.Geometries.Polygon)new NetTopologySuite.IO.WKTReader().Read("SRID=4326;POLYGON ((35.944914401626164 32.05746209539408, 36.05840058444662 31.99578659548469, 36.06422038869383 31.904430696264882, 35.87798665278333 31.779595771940045, 35.75140591040666 31.805565454728104, 35.67720340625483 32.00565746582009, 35.944914401626164 32.05746209539408))"),
                             Distance = 0.0,
                             IsWithinDistance = false,
-                            Location = (NetTopologySuite.Geometries.Point)new NetTopologySuite.IO.WKTReader().Read("SRID=4326;POINT (36.089075941349364 32.065718789490624)"),
-                            Name = "Hamam"
+                            Location = (NetTopologySuite.Geometries.Point)new NetTopologySuite.IO.WKTReader().Read("SRID=4326;POINT (35.95048433946144 31.974175313038348)"),
+                            Name = "Hanini"
                         },
                         new
                         {
                             RestaurantId = 3,
-                            City = "Aqaba",
+                            City = "Amman",
+                            DeliveryAreaCoverage = (NetTopologySuite.Geometries.Polygon)new NetTopologySuite.IO.WKTReader().Read("SRID=4326;POLYGON ((35.944914401626164 32.05746209539408, 36.05840058444662 31.99578659548469, 36.06422038869383 31.904430696264882, 35.87798665278333 31.779595771940045, 35.75140591040666 31.805565454728104, 35.67720340625483 32.00565746582009, 35.944914401626164 32.05746209539408))"),
                             Distance = 0.0,
                             IsWithinDistance = false,
-                            Location = (NetTopologySuite.Geometries.Point)new NetTopologySuite.IO.WKTReader().Read("SRID=4326;POINT (35.00314101505938 29.542843619043456)"),
-                            Name = "So Yummy"
+                            Location = (NetTopologySuite.Geometries.Point)new NetTopologySuite.IO.WKTReader().Read("SRID=4326;POINT (35.86016216507191 31.89156322955307)"),
+                            Name = "Barcelona"
                         },
                         new
                         {
                             RestaurantId = 4,
-                            City = "Irbid",
+                            City = "Amman",
+                            DeliveryAreaCoverage = (NetTopologySuite.Geometries.Polygon)new NetTopologySuite.IO.WKTReader().Read("SRID=4326;POLYGON ((35.944914401626164 32.05746209539408, 36.05840058444662 31.99578659548469, 36.06422038869383 31.904430696264882, 35.87798665278333 31.779595771940045, 35.75140591040666 31.805565454728104, 35.67720340625483 32.00565746582009, 35.944914401626164 32.05746209539408))"),
                             Distance = 0.0,
                             IsWithinDistance = false,
-                            Location = (NetTopologySuite.Geometries.Point)new NetTopologySuite.IO.WKTReader().Read("SRID=4326;POINT (35.86709690468255 32.55783701513558)"),
-                            Name = "Sultan"
+                            Location = (NetTopologySuite.Geometries.Point)new NetTopologySuite.IO.WKTReader().Read("SRID=4326;POINT (35.886529536501136 31.984122756596005)"),
+                            Name = "Tazaj"
+                        },
+                        new
+                        {
+                            RestaurantId = 5,
+                            City = "Amman",
+                            DeliveryAreaCoverage = (NetTopologySuite.Geometries.Polygon)new NetTopologySuite.IO.WKTReader().Read("SRID=4326;POLYGON ((35.944914401626164 32.05746209539408, 36.05840058444662 31.99578659548469, 36.06422038869383 31.904430696264882, 35.87798665278333 31.779595771940045, 35.75140591040666 31.805565454728104, 35.67720340625483 32.00565746582009, 35.944914401626164 32.05746209539408))"),
+                            Distance = 0.0,
+                            IsWithinDistance = false,
+                            Location = (NetTopologySuite.Geometries.Point)new NetTopologySuite.IO.WKTReader().Read("SRID=4326;POINT (35.854908281588884 31.95462276640964)"),
+                            Name = "KFC"
+                        },
+                        new
+                        {
+                            RestaurantId = 6,
+                            City = "Aqaba",
+                            DeliveryAreaCoverage = (NetTopologySuite.Geometries.Polygon)new NetTopologySuite.IO.WKTReader().Read("SRID=4326;POLYGON ((35.944914401626164 32.05746209539408, 36.05840058444662 31.99578659548469, 36.06422038869383 31.904430696264882, 35.87798665278333 31.779595771940045, 35.75140591040666 31.805565454728104, 35.67720340625483 32.00565746582009, 35.944914401626164 32.05746209539408))"),
+                            Distance = 0.0,
+                            IsWithinDistance = false,
+                            Location = (NetTopologySuite.Geometries.Point)new NetTopologySuite.IO.WKTReader().Read("SRID=4326;POINT (35.00316439395086 29.54277244939043)"),
+                            Name = "SoYummy"
                         });
                 });
 
